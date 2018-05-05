@@ -1,56 +1,106 @@
-"""
-Your task in this exercise has two steps:
+"""Audits an OSM file for errors
 
-- audit the OSMFILE and change the variable 'mapping' to reflect the changes needed to fix
-    the unexpected street types to the appropriate ones in the expected list.
-    You have to add mappings only for the actual problems you find in this OSMFILE,
-    not a generalized solution, since that may and will depend on the particular area you are auditing.
-- write the update_name function, to actually fix the street name.
-    The function takes a string with street name as an argument and should return the fixed name
-    We have provided a simple test so that you see what exactly is expected
+Modified from the original audit.py module found in the case study quizzes
 """
 import xml.etree.cElementTree as ET
 from collections import defaultdict
 import re
 import pprint
 
-OSMFILE = "sample.osm"
+OSMFILE = "napoli.osm"
+
+# REGULAR EXPRESSIONS
 # Searches for the street type at the beginning of the string, as is the Italian convention
-# Also finds and ignores Roman numeral prefixes which are sometimes found in Italian street names
+# Also allows for optional Roman numeral prefixes which are sometimes found in Italian street names
 #   for example: II Traversa Cappuccini returns only Traversa
 street_type_re = re.compile(r'(^(?:IV\s+|V?I{0,3}\s+)?)(\w+)', re.IGNORECASE)
-# finds Roman Numerals (for capitalization checking)
+# Finds Roman Numerals (for capitalization checking)
 roman_numeral_re = re.compile(r'\bIV\b|\bV?I{1,3}\b', re.IGNORECASE)
-# finds all single letter abbreviations
-over_abbr_re = re.compile(r'\b\w\.')
+# Finds all single letter abbreviations. Returns following word for context.
+over_abbr_re = re.compile(r'(\b\w\.\s*)+\w+')
 
-
-expected = ["calata",
+# List of expected street names in the dataset.
+expected = ["borgo",
+            "calata",
+            "circumvallazione",
+            "contrada",
             "corso",
+            "cupa",
+            "discesa",
+            "domenico",
+            "galleria",
+            "gradoni",
             "largo",
+            "molo",
             "parco",
+            "pendio",
             "piazza", "piazzale", "piazzetta",
+            "rampa", "rampe",
+            "riviera",
             "salita",
-            "strada",
+            "san",
+            "scale",
+            "strada", "stradone",
+            "supportico",
             "traversa",
             "via", "viale",
             "vico", "vicolo", "vicoletto"]
 
-# The most common issue with street names was capitalization
-mapping = {
+# Mapping of street names to be corrected
+st_name_mapping = {
+    'Prima': 'I',
+    'Seconda': 'II',
     'viia': 'Via',
     'Viia': 'Via'
 }
 
+# Mapping of abbreviations to full names
+abbreviations = {
+    "A. De": "Antonio De",
+    "A. S. Novaro": "Angelo Silvio Novaro",
+    "B. V. Romano": "Beato Vincenzo Romano",
+    "G. Di": "Gaspare Di",
+    "G. Marotta": "Giuseppe Marotta",
+    "G. Melisurgo": "Guglielmo Melisurgo",
+    "S. Angelo": "Sant'Angelo",
+    "S.Agnese": "Sant'Agnese",
+    "S.Ignazio": "Sant'Ignazio"
+}
+
+# Mapping of cuisine type corrections
+cuisine_types = {
+    "italian_pizza": "pizza",
+    "regional,_italian": "regional"
+}
+
+
 def audit_street_type(street_types, street_name):
+    """
+    Populates a dictionary of unexpected street types
+
+    Searches for the street type from a given street name, and then
+    verifies that it is an expected street type. If not, adds the street
+    type and full street name ot the dictionary.
+    :param street_types: dictionary to update
+    :param street_name: street name to search
+    :return: No return value, dictionary is modified in outer scope
+    """
+    # search for street name
     m = street_type_re.search(street_name)
     if m:
         street_type = m.group(2)
         if street_type.lower() not in expected:
+            # street type unexpected, add to dictionary
             street_types[street_type].add(street_name)
 
 
 def audit_abbr(over_abbreviated, street_name):
+    """
+    Populates a dictionary of abbreviations and the streets that contain them
+    :param over_abbreviated: dictionary to update
+    :param street_name: street name to check for abbreviations
+    :return: No return value, dictionary is modified in outer scope
+    """
     m = over_abbr_re.search(street_name)
     if m:
         abbr = m.group()
@@ -58,23 +108,40 @@ def audit_abbr(over_abbreviated, street_name):
 
 
 def audit_cuisines(cuisines, cuisine_list):
+    """
+    Splits cuisine values from the dataset and updates a dictionary
+
+    The dataset contains a "cuisine" value that is a semicolon separated list of
+    cuisine types. This function splits those values and updates a dictionary that
+    tracks a count of how many times each cuisine is found in the dataset
+    :param cuisines: dictionary of cuisines to update
+    :param cuisine_list: list of cuisines types to process
+    :return: No return value, dictionary is modified in outer scope
+    """
     for cuisine_type in cuisine_list.split(';'):
         cuisines[cuisine_type] +=1
 
 
 def audit_phone_numbers(formats, number):
-    """Audits phone numbers for formatting errors
+    """
+    Audits phone numbers for formatting errors
 
+    The formats dictionary contains mixed types. The end result will
+    be a list of numbers containing various character types for informational
+    purposes, and 2 lists containing numbers of incorrect lengths or characters.
+    These are stored as full lists for closer inspection.
     :param formats: dictionary of invalid formats to populate
     :param number: phone number to validate
+    :return: No return value, dictionary is modified in outer scope
     """
-    wrong_format = []
 
     # check formatting
     if re.match(r'^\+39', number):  # starts with +39
         formats['has_country_code'] += 1
     else:
         formats['no_country_code'] += 1
+    if re.match(r'^(?:\+?39)?81', number):
+        formats['missing_prefix'] += 1
     if re.search('-', number):      # has a dash
         formats['has_dashes'] += 1
     if re.search(r'\s', number):    # contains any whitespace character
@@ -82,13 +149,14 @@ def audit_phone_numbers(formats, number):
 
     # Strip number to count digits
     digits_only = re.sub(r'[^\d]', '', number)
-    if not 6 <= len(digits_only) <= 13:
-        formats['incorrect_length'] += 1
-        wrong_format.append(digits_only)
+    # remove country code to count remaining digits
+    digits_only = re.sub(r'^39', '', digits_only)
+    if not 6 <= len(digits_only) <= 11:
+        formats['incorrect_length'].append(number)
 
     # catch all numbers with unexpected characters
     if re.search(r'[^\+\d\s-]', number):
-        wrong_format.append(number)
+        formats['bad_chars'].append(number)
 
 
 def is_street_name(elem):
@@ -116,10 +184,12 @@ def audit(osmfile):
     over_abbreviated = defaultdict(set)
     cuisines = defaultdict(int)
     phone_numbers = {'has_country_code': 0,
-               'no_country_code': 0,
-               'has_dashes': 0,
-               'has_spaces': 0,
-               'incorrect_length': 0 # should be 12 including country code
+                     'no_country_code': 0,
+                     'missing_prefix': 0,
+                     'has_dashes': 0,
+                     'has_spaces': 0,
+                     'incorrect_length': [],
+                     'bad_chars': [],
                }
 
     tags = iterosm(osmfile)
@@ -150,7 +220,7 @@ def iterosm(osmfile, tag_types=('node', 'way')):
                     yield tag
 
 
-def update_street_name(name, mapping):
+def update_street_name(name):
     # Convert lowercase street names to title case
     if name.islower():
         name = name.title()
@@ -161,12 +231,30 @@ def update_street_name(name, mapping):
     # retrieve the street type
     m = street_type_re.search(name)
     street_type = m.group(2)
-    if street_type in mapping:
-        replacement = r'\1' + mapping[street_type]
+    if street_type in st_name_mapping:
+        replacement = r'\1' + st_name_mapping[street_type]
         name = street_type_re.sub(replacement, name)
     elif street_type.islower():
         replacement = r'\1' + street_type.capitalize()
         name = street_type_re.sub(replacement, name)
+
+    return name
+
+
+def update_short_name(name):
+    """Expands an abbreviated name to full length
+
+    :param name: Abbreviated name to expand
+    :return: Unabbreviated name
+    """
+    # First verify that the common errors have been fixed
+    name = update_street_name(name)
+
+    # Find the abbreviation to replace
+    m = over_abbr_re.search(name)
+    if m:
+        if m.group() in abbreviations:
+            name = over_abbr_re.sub(abbreviations[m.group()], name)
 
     return name
 
@@ -179,10 +267,36 @@ def update_cuisine(cuisine_type):
     """
 
     # there is only pizza
-    if re.search('pizza', cuisine_type, re.IGNORECASE):
-        cuisine_type = 'pizza'
+    if cuisine_type in cuisine_types.iterkeys():
+        return cuisine_types[cuisine_type]
+    else:
+        return cuisine_type
 
-    return cuisine_type
+
+def update_number(number):
+    """
+    Corrects number formatting
+    :param number: phone number to reformat
+    :return: phone number in +<country code><number> format
+    """
+    # remove non-numeric characters
+    number = re.sub(r'[^\d]', '', number)
+
+    # remove country code for length checking
+    number = re.sub(r'^39', '', number)
+
+    # Return None if the number is in the incorrect format
+    if not 6 <= len(number) <= 11:
+        return None
+
+    # Verify landlines include a 0 prefix.
+    # A land line is any number not starting with a 3.
+    number = re.sub(r'^([^03]\d+)', r'0\1', number)
+
+    # Insert country code
+    number = "+39" + number
+
+    return number
 
 
 def test():
@@ -192,14 +306,31 @@ def test():
     pprint.pprint(dict(cuisines))
     pprint.pprint(phone_formats)
 
-    for st_type, ways in st_types.iteritems():
+    for ways in st_types.itervalues():
         for name in ways:
-            better_name = update_street_name(name, mapping)
+            better_name = update_street_name(name)
             print name, "=>", better_name
+    for abbreviated in over_abbr.itervalues():
+        for short_name in abbreviated:
+            full_name = update_short_name(short_name)
+        print short_name, "=>", full_name
     for cuisine_type in cuisines.iterkeys():
         better_cuisine_type = update_cuisine(cuisine_type)
         if cuisine_type != better_cuisine_type:
             print cuisine_type, "=>", better_cuisine_type
+
+    # create a list of sample updated numbers
+    sample_numbers = {}
+    tags = iterosm(OSMFILE)
+    while len(sample_numbers) < 10:
+        tag = next(tags)
+        if is_phone(tag):
+            number = tag.attrib['v']
+            sample_numbers[number] = update_number(number)
+    else:
+        tags.close()
+    for old, new in sample_numbers.iteritems():
+        print old, "=>", new
 
 
 if __name__ == '__main__':
