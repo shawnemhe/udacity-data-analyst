@@ -1,4 +1,5 @@
-"""Audits an OSM file for errors
+"""
+Audits an OSM file for errors
 
 Modified from the original audit.py module found in the case study quizzes
 """
@@ -119,7 +120,7 @@ def audit_cuisines(cuisines, cuisine_list):
     :return: No return value, dictionary is modified in outer scope
     """
     for cuisine_type in cuisine_list.split(';'):
-        cuisines[cuisine_type] +=1
+        cuisines[cuisine_type] += 1
 
 
 def audit_phone_numbers(formats, number):
@@ -142,9 +143,9 @@ def audit_phone_numbers(formats, number):
         formats['no_country_code'] += 1
     if re.match(r'^(?:\+?39)?81', number):
         formats['missing_prefix'] += 1
-    if re.search('-', number):      # has a dash
+    if re.search('-', number):  # has a dash
         formats['has_dashes'] += 1
-    if re.search(r'\s', number):    # contains any whitespace character
+    if re.search(r'\s', number):  # contains any whitespace character
         formats['has_spaces'] += 1
 
     # Strip number to count digits
@@ -190,7 +191,7 @@ def audit(osmfile):
                      'has_spaces': 0,
                      'incorrect_length': [],
                      'bad_chars': [],
-               }
+                     }
 
     tags = iterosm(osmfile)
     for tag in tags:
@@ -214,7 +215,7 @@ def iterosm(osmfile, tag_types=('node', 'way')):
     :return: yields a tag value
     """
     with open(osmfile, 'r') as osm_file:
-        for event, elem in ET.iterparse(osmfile, events=('start',)):
+        for event, elem in ET.iterparse(osm_file, events=('start',)):
             if elem.tag in tag_types:
                 for tag in elem.iter('tag'):
                     yield tag
@@ -313,7 +314,7 @@ def test():
     for abbreviated in over_abbr.itervalues():
         for short_name in abbreviated:
             full_name = update_short_name(short_name)
-        print short_name, "=>", full_name
+            print short_name, "=>", full_name
     for cuisine_type in cuisines.iterkeys():
         better_cuisine_type = update_cuisine(cuisine_type)
         if cuisine_type != better_cuisine_type:
