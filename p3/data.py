@@ -193,7 +193,7 @@ def test():
     # NOTE: if you are running this code on your computer, with a larger dataset,
     # call the process_map procedure with pretty=False. The pretty=True option adds
     # additional spaces to the output, making it significantly larger.
-    data = process_map('sample.osm', False)
+    data = process_map('napoli.osm', False)
 
     addresses_found = 0
     for tag in data:

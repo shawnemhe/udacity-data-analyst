@@ -109,3 +109,5 @@ venv.bak/
 # Udacity quizzes
 .quizzes
 
+# MongoDB
+p3/db/
