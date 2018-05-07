@@ -266,8 +266,6 @@ def update_cuisine(cuisine_type):
     :param cuisine_type: type to fix
     :return: corrected cuisine type
     """
-
-    # there is only pizza
     if cuisine_type in cuisine_types.iterkeys():
         return cuisine_types[cuisine_type]
     else:

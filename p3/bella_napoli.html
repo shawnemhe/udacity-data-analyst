@@ -11775,9 +11775,10 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Wrangle-OpenStreetMap-Data">Wrangle OpenStreetMap Data<a class="anchor-link" href="#Wrangle-OpenStreetMap-Data">&#182;</a></h1><blockquote><h2 id="Bella-Napoli---Naples,-Italy">Bella Napoli - Naples, Italy<a class="anchor-link" href="#Bella-Napoli---Naples,-Italy">&#182;</a></h2><p>Author: Shawn P Emhe II</p>
+<h1 id="Wrangle-OpenStreetMap-Data-[MongoDB]">Wrangle OpenStreetMap Data [MongoDB]<a class="anchor-link" href="#Wrangle-OpenStreetMap-Data-[MongoDB]">&#182;</a></h1><blockquote><h2 id="Bella-Napoli---Naples,-Italy">Bella Napoli - Naples, Italy<a class="anchor-link" href="#Bella-Napoli---Naples,-Italy">&#182;</a></h2><p>Author: Shawn P Emhe II</p>
 </blockquote>
 <p>I have lived in the Naples area for a significant portion of my adult life. Originally dubbed Neapolis, or New City by the ancient Greeks, Naples is anything but. The tight winding streets and dense population should provide interesting challenges for this project.</p>
+<p>The map for the project can be found <a href="https://www.openstreetmap.org/relation/40767">here</a>.</p>
 <h2 id="Problems-with-the-Data">Problems with the Data<a class="anchor-link" href="#Problems-with-the-Data">&#182;</a></h2><p>Running audits on the Naples area dataset revealed several obstacles that needed to be worked through before the data could be wrangled into a MongoDB database. These problems ranged from the wide array of street types used in the region, inconsistent capitalization by map contributors and over abbrevations in street names. There were even conflicts in the way contributors tagged the city's most famous gastrnomical contribution.  In addition, Italy has several different phone formats making phone number validation a feat of its own.</p>
 <p>An audit module was used to audit the file and find errors in the data.</p>
 
@@ -11808,7 +11809,7 @@ div#notebook {
 <li>Street names used abbreviations whose meanings weren't apparent.</li>
 </ul>
 <p>Correcting capitalzation was made easy by converting the strings to title case. A regular expression was used to ensure that roman numerals were fixed after this step. E.G., "Iv" needed to be converted back to "IV" after title case was applied.</p>
-<p>The abbreviations required more attention. They were handled by building a regular expression that captured the abbreviation along with the immediately following word. This allowed for capturing the context of the abbreviation before making the correction. The full street names were tracked down and used to buid a dictionary.</p>
+<p>The abbreviations required more attention. They were handled by building a regular expression that captured the abbreviation along with the immediately following word. This allowed for capturing the context before making a correction. The full street names were tracked down and used to buid a dictionary.</p>
 <div class="highlight"><pre><span></span><span class="n">abbreviations</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;A. De&quot;</span><span class="p">:</span> <span class="s2">&quot;Antonio De&quot;</span><span class="p">,</span>
     <span class="s2">&quot;A. S. Novaro&quot;</span><span class="p">:</span> <span class="s2">&quot;Angelo Silvio Novaro&quot;</span><span class="p">,</span>
@@ -11884,6 +11885,9 @@ div#notebook {
 <li>fried_pizza</li>
 </ul>
 </li>
+</ul>
+<p>The Italian pizza tag can be easily dropped as superfluous information. However, from experience I know that fried pizza is an option that not all pizzerias offer and is worth keeping.</p>
+<ul>
 <li>There were multiple ways of tagging the local food:<ul>
 <li>italian</li>
 <li>regional</li>
@@ -11891,7 +11895,6 @@ div#notebook {
 </ul>
 </li>
 </ul>
-<p>Naples prides itself in being the birth place of pizza, and any variations from the local recipe are likely to get a restaurant owner chased out of town by an angry mob. The Italian pizza tag can be easily dropped as superfluous information. However, from experience I know that fried pizza is an option that not all pizzerias offer and is worth keeping.</p>
 <p>"Regional" is also relavent because many restaurants like to distinguish themselves as being representative of the classic dishes of their area. However, "regional italian" can be shortened to "regional" without losing any information and increase conformity of the tags.</p>
 <p>The following dictionary and function were created to update the cuisine tags.</p>
 <div class="highlight"><pre><span></span><span class="n">cuisine_types</span> <span class="o">=</span> <span class="p">{</span>
@@ -11905,8 +11908,6 @@ div#notebook {
 <span class="sd">    :param cuisine_type: type to fix</span>
 <span class="sd">    :return: corrected cuisine type</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># there is only pizza</span>
     <span class="k">if</span> <span class="n">cuisine_type</span> <span class="ow">in</span> <span class="n">cuisine_types</span><span class="o">.</span><span class="n">iterkeys</span><span class="p">():</span>
         <span class="k">return</span> <span class="n">cuisine_types</span><span class="p">[</span><span class="n">cuisine_type</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
@@ -11955,6 +11956,15 @@ div#notebook {
 
     <span class="k">return</span> <span class="n">number</span>
 </pre></div>
+<h3 id="The-One-That-Got-Away">The One That Got Away<a class="anchor-link" href="#The-One-That-Got-Away">&#182;</a></h3><p>Later, while exploring the data in MongoDB I discovered an unexpected <code>type</code> value.</p>
+<div class="highlight"><pre><span></span><span class="n">napoli</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+<span class="p">[</span><span class="sa">u</span><span class="s1">&#39;node&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;way&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;civil&#39;</span><span class="p">]</span>
+</pre></div>
+<p>I recalled from the sample project in the course that the author had found an instance of second level "k" tags overwriting the top level data. To fix this I added a  check to the data.py module that prepended the string "tag_" to any "k" tags that already existed in the node.</p>
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">node</span><span class="p">:</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="s1">&#39;tag_&#39;</span> <span class="o">+</span> <span class="n">k</span>
+</pre></div>
+<p>This logic corrects problem without having to anticipate the "k" values that will cause conflicts.</p>
 
 </div>
 </div>
@@ -11964,6 +11974,376 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Exploring-the-data">Exploring the data<a class="anchor-link" href="#Exploring-the-data">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <code>napoli.osm</code> XML file was 91.6 MB. The processing steps resulted in a 101 MB JSON file that was imported with the mongoimport command. The command below was used to import the JSON documents into a collection named "napoli" in the "openstreetmap" database.</p>
+
+<pre><code>batchfile
+'C:\Program Files\MongoDB\Server\3.6\bin\mongoimport.exe' /d openstreetmap /c napoli /file:.\napoli.osm.json
+2018-05-06T14:19:59.322+0200    connected to: localhost
+2018-05-06T14:20:00.672+0200    [####....................] openstreetmap.napoli 19.2MB/101MB (18.9%)
+2018-05-06T14:20:03.671+0200    [#############...........] openstreetmap.napoli 58.8MB/101MB (58.1%)
+2018-05-06T14:20:06.670+0200    [########################] openstreetmap.napoli 101MB/101MB (100.0%)
+2018-05-06T14:20:06.677+0200    [########################] openstreetmap.napoli 101MB/101MB (100.0%)
+2018-05-06T14:20:06.678+0200    imported 478915 documents</code></pre>
+<p>The ouput showed that 478,915 documents were imported.</p>
+<h3 id="Connect-to-MongoDB">Connect to MongoDB<a class="anchor-link" href="#Connect-to-MongoDB">&#182;</a></h3><p>The pymongo library provides tools that can be used to explore the database with python.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Import necessary modules</span>
+<span class="kn">from</span> <span class="nn">pymongo</span> <span class="kn">import</span> <span class="n">MongoClient</span><span class="p">,</span> <span class="n">GEO2D</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="c1"># Create the client connection</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">MongoClient</span><span class="p">(</span><span class="s1">&#39;mongodb://localhost:27017&#39;</span><span class="p">)</span>
+
+<span class="c1"># Create a reference to the database and collection</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">openstreetmap</span>
+<span class="n">napoli</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">openstreetmap</span><span class="o">.</span><span class="n">napoli</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Database-Statistics">Database Statistics<a class="anchor-link" href="#Database-Statistics">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Convert bytes to megabytes</span>
+<span class="k">def</span> <span class="nf">bytes_to_mb</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">size</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">/</span> <span class="mi">1024</span>
+
+<span class="c1"># The db.command() method runs MongoDB commands on the database.</span>
+<span class="c1"># The collstats command returns a dictionary of collection statistics which contains &#39;size&#39;</span>
+<span class="n">coll_size</span> <span class="o">=</span> <span class="n">bytes_to_mb</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;collstats&#39;</span><span class="p">,</span> <span class="s1">&#39;napoli&#39;</span><span class="p">)[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
+
+<span class="c1"># The distinct method returns unique values from a field. Here dot notation is used to get </span>
+<span class="c1"># all of the unique uid&#39;s from the created objects, and then the length is captured</span>
+<span class="n">n_users</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">napoli</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="s1">&#39;created.uid&#39;</span><span class="p">))</span>
+
+<span class="c1"># The count method returns the number of results for each query.</span>
+<span class="n">n_nodes</span> <span class="o">=</span> <span class="n">napoli</span><span class="o">.</span><span class="n">count</span><span class="p">({</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;node&#39;</span><span class="p">})</span>
+<span class="n">n_ways</span> <span class="o">=</span> <span class="n">napoli</span><span class="o">.</span><span class="n">count</span><span class="p">({</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;way&#39;</span><span class="p">})</span>
+
+<span class="k">print</span> <span class="s1">&#39;Colection Size: {} MB&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">coll_size</span><span class="p">)</span>
+<span class="k">print</span> <span class="s1">&#39;Unique Users: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_users</span><span class="p">)</span>
+<span class="k">print</span> <span class="s1">&#39;Nodes: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_nodes</span><span class="p">)</span>
+<span class="k">print</span> <span class="s1">&#39;Ways: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_ways</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Colection Size: 109 MB
+Unique Users: 715
+Nodes: 412185
+Ways: 66730
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="10-Most-common-cuisines">10 Most common cuisines<a class="anchor-link" href="#10-Most-common-cuisines">&#182;</a></h3><p>MongoDB uses Aggregation Pipelines to run queries that aggregate totals. The pipelines break the process down into a list of steps.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Create a list of aggregation steps to feed as a pipeline</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># because the cuisine field is an array, it needs to be &quot;unwound&quot; before aggregation</span>
+    <span class="p">{</span><span class="s1">&#39;$unwind&#39;</span><span class="p">:</span> <span class="s1">&#39;$cuisine&#39;</span><span class="p">},</span>
+    <span class="c1"># aggregate by cuisine type and count each type</span>
+    <span class="p">{</span><span class="s1">&#39;$group&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;_id&#39;</span><span class="p">:</span> <span class="s1">&#39;$cuisine&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$sum&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="c1"># sort descending</span>
+    <span class="p">{</span><span class="s1">&#39;$sort&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}},</span>
+    <span class="c1"># limiting to top 10</span>
+    <span class="p">{</span><span class="s1">&#39;$limit&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
+<span class="p">]</span>
+
+<span class="n">cuisine_counts</span> <span class="o">=</span> <span class="n">napoli</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">pipeline</span><span class="p">)</span>
+
+<span class="c1"># Lambda function to modify the output of aggregate</span>
+<span class="n">pretty_count</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">),</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">cuisine_counts</span><span class="p">:</span>
+   <span class="k">print</span><span class="p">(</span><span class="n">pretty_count</span><span class="p">(</span><span class="n">count</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(&#39;italian&#39;, 104)
+(&#39;pizza&#39;, 91)
+(&#39;regional&#39;, 25)
+(&#39;seafood&#39;, 11)
+(&#39;coffee_shop&#39;, 9)
+(&#39;kebab&#39;, 7)
+(&#39;burger&#39;, 6)
+(&#39;fish&#39;, 5)
+(&#39;pasta&#39;, 3)
+(&#39;sandwich&#39;, 3)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Mangiamo-Italiano">Mangiamo Italiano<a class="anchor-link" href="#Mangiamo-Italiano">&#182;</a></h4><p>While Kebab and Burger have managed to make their way into the top 10, the rest are all Italian affair. Sandwhiches are also arguably international, but even they have a unique Italian flavor here.</p>
+<h3 id="Pizza-on-every-corner">Pizza on every corner<a class="anchor-link" href="#Pizza-on-every-corner">&#182;</a></h3><p>Sometimes it feels like Napoli has pizzarias like U.S. cities have Starbucks. But MongoDB can use geospatial queries to make quantifiable measuremants.</p>
+<p>First, a geospacial index needs to created using the "pos" data.</p>
+<div class="highlight"><pre><span></span><span class="n">napoli</span><span class="o">.</span><span class="n">create_index</span><span class="p">([(</span><span class="s1">&#39;pos&#39;</span><span class="p">,</span> <span class="n">GEO2D</span><span class="p">)])</span>
+</pre></div>
+<p>Then we can collect all of the pizzarias in the city of Napoli and store their positions. The full dataset includes rural surrounding areas, so the search will be restricted to the city itself.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pizzaria_locations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">napoli</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+    <span class="p">{</span><span class="s1">&#39;cuisine&#39;</span><span class="p">:</span> <span class="s1">&#39;pizza&#39;</span><span class="p">,</span> <span class="s1">&#39;pos&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$exists&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="s1">&#39;address.city&#39;</span><span class="p">:</span> <span class="s1">&#39;Napoli&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;pos&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">}))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <code>$geoNear</code> operator can be used to query for the nearest pizzaria to a location. This code will loop through all the pizzarias and build a list of distances to the next closest location.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">distances</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">pizzaria</span> <span class="ow">in</span> <span class="n">pizzaria_locations</span><span class="p">:</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;$geoNear&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;near&#39;</span><span class="p">:</span> <span class="n">pizzaria</span><span class="p">[</span><span class="s1">&#39;pos&#39;</span><span class="p">],</span>  <span class="c1"># use the current pizzarias position</span>
+                <span class="s1">&#39;query&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;cuisine&#39;</span><span class="p">:</span> <span class="s1">&#39;pizza&#39;</span><span class="p">,</span>  <span class="c1"># find only pizzarias</span>
+                    <span class="s1">&#39;_id&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$ne&#39;</span><span class="p">:</span> <span class="n">pizzaria</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">]}},</span>  <span class="c1"># but exclude the current pizzaria</span>
+                <span class="s1">&#39;distanceMultiplier&#39;</span><span class="p">:</span> <span class="mi">6371</span><span class="p">,</span>  <span class="c1"># Earth&#39;s radius in km, used to convert the result from radians</span>
+                <span class="s1">&#39;distanceField&#39;</span><span class="p">:</span> <span class="s1">&#39;distance.calculated&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;num&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># limit to only 1 result</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;$project&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;distance.calculated&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">}</span> <span class="p">}</span>
+    <span class="p">]</span>
+    <span class="n">distances</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">napoli</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">pipeline</span><span class="p">)</span><span class="o">.</span><span class="n">next</span><span class="p">()[</span><span class="s1">&#39;distance&#39;</span><span class="p">][</span><span class="s1">&#39;calculated&#39;</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Output statistics:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="s1">&#39;The average distance is {:.2f} km&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">distances</span><span class="p">))</span>
+<span class="k">print</span> <span class="s1">&#39;The closest pizzarias were {:.2f} km&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">distances</span><span class="p">))</span>
+<span class="k">print</span> <span class="s1">&#39;The farthest were {:.2f} km&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">distances</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>The average distance is 12.44 km
+The closest pizzarias were 0.84 km
+The farthest were 76.67 km
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The average and minimum distances are higher than I expected. I suspect that this is an indication of incomplete data and if more restaurants were accurately tagged the results would have shown the locations are much closer.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Additional-Improvements">Additional Improvements<a class="anchor-link" href="#Additional-Improvements">&#182;</a></h3><p>Querying the documents with "tourism" information revealed that aside from museums, the dataset contains very little information that could help a user explore Naples's storied past. It is possible that some of the sites tagged "attraction" could be historical, but this would require extra digging on the user's part.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pipeline</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s1">&#39;$match&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;tourism&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$exists&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+    <span class="p">}},</span>
+    <span class="p">{</span><span class="s1">&#39;$group&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;_id&#39;</span><span class="p">:</span> <span class="s1">&#39;$tourism&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;count&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$sum&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+    <span class="p">}}</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">napoli</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">pipeline</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">pretty_count</span><span class="p">(</span><span class="n">count</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(&#39;gallery&#39;, 1)
+(&#39;apartment&#39;, 4)
+(&#39;hostel&#39;, 13)
+(&#39;theme_park&#39;, 3)
+(&#39;caravan_site&#39;, 4)
+(&#39;artwork&#39;, 10)
+(&#39;motel&#39;, 4)
+(&#39;yes&#39;, 4)
+(&#39;information&#39;, 16)
+(&#39;picnic_site&#39;, 5)
+(&#39;aquarium&#39;, 1)
+(&#39;viewpoint&#39;, 48)
+(&#39;museum&#39;, 49)
+(&#39;hotel&#39;, 163)
+(&#39;guest_house&#39;, 175)
+(&#39;camp_site&#39;, 3)
+(&#39;attraction&#39;, 23)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <a href="http://www.comune.napoli.it/opendata" title="Comune di Napoli - Open Data">Comune di Napoli - Open Data</a> site has information that could enhance the dataset. Specifically, they have <a href="https://en.wikipedia.org/wiki/Shapefile" title="Shapefile - Wikipedia">shapefiles</a> for <a href="http://www.comune.napoli.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/26349" title="Unesco zones">Unesco zones</a>, the <a href="http://www.comune.napoli.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/29759" title="Centro Storico: Historic center">historic center</a> and for <a href="http://www.comune.napoli.it/flex/cm/pages/ServeBLOB.php/L/IT/IDPagina/29760" title="Archeological Areas">archeological areas</a>. This information could be imported and specifically tagged for their historical significance. However, it would require additional wrangling to convert the shapefiles into JSON files so that they could be read into MongoDB.</p>
+
 </div>
 </div>
 </div>

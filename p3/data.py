@@ -119,7 +119,7 @@ def shape_element(element):
 
         # Capture the latitude and longitude if present
         if 'lat' in node and 'lon' in node:
-            node['pos'] = [float(node.pop('lat')), float(node.pop('lon'))]
+            node['pos'] = [float(node.pop('lon')), float(node.pop('lat'))]
 
         # Get the second level tags
         for tag in element.findall('tag'):
