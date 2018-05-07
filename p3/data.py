@@ -126,6 +126,10 @@ def shape_element(element):
             # grab the k and v attributes
             k, v = tag.attrib['k'], tag.attrib['v']
 
+            # Rename keys already in node to ensure they aren't overwritten
+            if k in node:
+                k = 'tag_' + k
+
             # skip tag if key contains problem characters
             if problemchars.search(k): continue
 
