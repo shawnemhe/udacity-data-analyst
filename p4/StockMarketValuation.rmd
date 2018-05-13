@@ -1,0 +1,302 @@
+Stock Market Valuation by Shawn P Emhe II
+========================================================
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load packages
+
+library(ggplot2)
+library(lubridate)
+library(xts)
+```
+
+In *Irrational Exhuberance*, Robert Shiller compiled over 100 years of data to
+demonstrate how market dynamics create cycles in which the stock market prices
+become disconnected with valuations. One criticism[^1] of his work is that
+prices are set by the market, not by valuations, and because of this no one can
+say when the market is "overvalued" or "undervalued."
+
+I intend to use the dataset explore the link between value and price, as well as
+test additional factors known to affect price movements.
+
+[^1]: [StockCharts Irrational Exuberance Review](
+http://stockcharts.com/school/doku.php?id=chart_school:overview:
+irrational_exuberanc)
+
+```{r echo=FALSE, Load_the_Data}
+# Load the Data
+cape <- read.csv("ie_data.csv", sep = "\t")
+```
+
+# Data Wrangling
+
+The data is already in tidy format, but still requires some wrangling prior to
+exploration.
+
+```{r echo=FALSE, Wrangle_Data}
+str(cape)
+```
+
+The `str` command shows that there are two date fields.
+
+1. Date: `r cape$Date[1:3]` ...
+2. DateFraction: `r cape$DateFraction[1:3]` ...
+
+Both use a YYYY.MM format, with the first numbers the months 01 thru 12 and the
+second representing months as a fraction of the year. I reviewed the 
+background information[^2] on the dataset and the original excel file. The most
+logical explanation I could find was that the second format was created for use
+as the X-axis for the charts in the excel file. The first format was likely an
+output of another program or data source and is not a format interpretable by
+excel.
+
+[^2]:[Robert Shiller's Irrational Exuberance Data](
+http://www.econ.yale.edu/~shiller/data.htm)
+
+```{r echo=FALSE, Parse_Dates}
+# Convert date to character format for lubridate parser
+cape$Date <- as.character(cape$Date)
+
+# Add trailing zeros to .1, so that it is interpretted as Oct and not Jan
+october <- nchar(cape$Date) == 6
+cape$Date <- ifelse(october, paste(cape$Date,"0", sep = ""), cape$Date)
+
+# Finally parse the result
+cape$Date <- parse_date_time(cape$Date, '%Y.%.m')
+
+# Convert cape into an xts Time-Series Object
+rownames(cape) <- cape$Date
+
+# Drop the Date and DateFraction columns
+cape <- subset(cape, select = -c(Date, DateFraction))
+```
+
+I converted the Date column into an R friendly POSIX format and dropped the 
+DateFraction column. I also set the date as the row name.
+
+## Feature Extraction
+
+As an additional preparation step I extracted related features that have been
+found to have an effect on price movements:
+
+1. Inflation: Rising prices create fear in the markets and can make stock
+prices drop.[^3]
+2. Momentum: Price advances and declines create feelings of greed and fear that
+lead to continuations.[^4]
+
+I created a `pct_change` function to extract the above two features from the 
+price and CPI columns. They are calculated as the percentage change over the 
+past 12 months.
+
+I also derived the future returns over several different time periods. I created
+a function used to shift the results of the `pct_change` function and used it to
+find the future returns over five forward looking periods to see how far, if at 
+all, returns could be estimated.
+
+Furthermore, I created a categorial variable to represent whether or not the 
+following period was bullish or bearish, getting to the heart of what most 
+investors care about. After all, can the market really be considered 
+*overvalued* if it is expected to keep rising in price?
+
+[^3]:[Why does inflation make stock prices fall?](
+https://theconversation.com/why-does-inflation-make-stock-prices-fall-91874)
+[^4]:[Returns to Buying Winners and Selling Losers](
+https://www.jstor.org/stable/2328882)
+
+```{r echo=FALSE, pct_change_function}
+pct_change <- function(vect, k = 12) {
+  # Calculates the percent change over a specified lookback
+  # :param vect:  vector of numbers
+  # :param  k:    number of periods to lookback
+  # :return:      running percent change over lookback length
+  
+  len = length(vect)
+  
+  # Create indexes that will be used to truncate the vector
+  front_trunc <- (1:k)
+  rear_trunc <- ((len-k+1):len)
+  
+  # Divide truncated versions of the vector by itself to get the percent change
+  result <- vect[-front_trunc]/vect[-rear_trunc] - 1
+  
+  # Pad the results so that it matches the original vector length
+  result <- c(rep(NA, k), result)
+  
+  return(result)
+}
+```
+
+```{r echo=FALSE, Fwd_Return_Function}
+fwd_return <- function(vect, k = 12) {
+  # Shift a vector by k values
+  # :param vect:  vector to shift
+  # :param k:     number of periods to shift by
+  # :return:      shifted vector
+
+  len <- length(vect)
+
+  p_changes <- pct_change(vect, k = k)
+
+  # Remove the first k values of the vector
+  result <- p_changes[-(1:k)]
+
+  # Restore the vector to original length (NA is appended automatically)
+  length(result) <- len
+
+  return(result)
+}
+
+```
+
+
+```{r echo=FALSE, Feature_Extraction}
+cape$Momentum <- pct_change(cape$Price)
+cape$CPIChange <- pct_change(cape$CPI)
+
+cape$Fwd1yrReturns <- fwd_return(cape$Price)
+cape$Fwd2yrReturns <- fwd_return(cape$Price, k = 24)
+cape$Fwd3yrReturns <- fwd_return(cape$Price, k = 36)
+cape$Fwd4yrReturns <- fwd_return(cape$Price, k = 48)
+cape$Fwd5yrReturns <- fwd_return(cape$Price, k = 60)
+
+bullish <- cape$Fwd1yrReturns > 0
+cape$Outlook <- ifelse(bullish, "Bullish", "Bearish")
+
+```
+
+# Univariate Plots Section
+
+> **Tip**: In this section, you should perform some preliminary exploration of
+your dataset. Run some summaries of the data and create univariate plots to
+understand the structure of the individual variables in your dataset. Don't
+forget to add a comment after each plot or closely-related group of plots!
+There should be multiple code chunks and text sections; the first one below is
+just to help you get started.
+
+```{r echo=FALSE, Univariate_Plots}
+
+```
+
+> **Tip**: Make sure that you leave a blank line between the start / end of
+each code block and the end / start of your Markdown text so that it is
+formatted nicely in the knitted text. Note as well that text on consecutive
+lines is treated as a single space. Make sure you have a blank line between
+your paragraphs so that they too are formatted for easy readability.
+
+# Univariate Analysis
+
+> **Tip**: Now that you've completed your univariate explorations, it's time to
+reflect on and summarize what you've found. Use the questions below to help you
+gather your observations and add your own if you have other thoughts!
+
+### What is the structure of your dataset?
+
+### What is/are the main feature(s) of interest in your dataset?
+
+### What other features in the dataset do you think will help support your \
+investigation into your feature(s) of interest?
+
+### Did you create any new variables from existing variables in the dataset?
+
+### Of the features you investigated, were there any unusual distributions? \
+Did you perform any operations on the data to tidy, adjust, or change the form \
+of the data? If so, why did you do this?
+
+
+# Bivariate Plots Section
+
+> **Tip**: Based on what you saw in the univariate plots, what relationships
+between variables might be interesting to look at in this section? Don't limit
+yourself to relationships between a main output feature and one of the
+supporting variables. Try to look at relationships between supporting variables
+as well.
+
+```{r echo=FALSE, Bivariate_Plots}
+
+```
+
+# Bivariate Analysis
+
+> **Tip**: As before, summarize what you found in your bivariate explorations
+here. Use the questions below to guide your discussion.
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. How did the feature(s) of interest vary with other features in \
+the dataset?
+
+### Did you observe any interesting relationships between the other features \
+(not the main feature(s) of interest)?
+
+### What was the strongest relationship you found?
+
+
+# Multivariate Plots Section
+
+> **Tip**: Now it's time to put everything together. Based on what you found in
+the bivariate plots section, create a few multivariate plots to investigate
+more complex interactions between variables. Make sure that the plots that you
+create here are justified by the plots you explored in the previous section. If
+you plan on creating any mathematical models, this is the section where you
+will do that.
+
+```{r echo=FALSE, Multivariate_Plots}
+
+```
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. Were there features that strengthened each other in terms of \
+looking at your feature(s) of interest?
+
+### Were there any interesting or surprising interactions between features?
+
+### OPTIONAL: Did you create any models with your dataset? Discuss the \
+strengths and limitations of your model.
+
+------
+
+# Final Plots and Summary
+
+> **Tip**: You've done a lot of exploration and have built up an understanding
+of the structure of and relationships between the variables in your dataset.
+Here, you will select three plots from all of your previous exploration to
+present here as a summary of some of your most interesting findings. Make sure
+that you have refined your selected plots for good titling, axis labels (with
+units), and good aesthetic choices (e.g. color, transparency). After each plot,
+make sure you justify why you chose each plot by describing what it shows.
+
+### Plot One
+```{r echo=FALSE, Plot_One}
+
+```
+
+### Description One
+
+
+### Plot Two
+```{r echo=FALSE, Plot_Two}
+
+```
+
+### Description Two
+
+
+### Plot Three
+```{r echo=FALSE, Plot_Three}
+
+```
+
+### Description Three
+
+------
+
+# Reflection
+
+> **Tip**: Here's the final step! Reflect on the exploration you performed and
+the insights you found. What were some of the struggles that you went through?
+What went well? What was surprising? Make sure you include an insight into
+future work that could be done with the dataset.
+
+> **Tip**: Don't forget to remove this, and the other **Tip** sections before
+saving your final work and knitting the final report!
