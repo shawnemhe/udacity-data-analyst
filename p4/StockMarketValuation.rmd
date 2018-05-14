@@ -42,7 +42,7 @@ The `str` command shows that there are two date fields.
 1. Date: `r cape$Date[1:3]` ...
 2. DateFraction: `r cape$DateFraction[1:3]` ...
 
-Both use a YYYY.MM format, with the first numbers the months 01 thru 12 and the
+Both use a YYYY.MM format, with the first numbering the months 01 thru 12 and the
 second representing months as a fraction of the year. I reviewed the 
 background information[^2] on the dataset and the original excel file. The most
 logical explanation I could find was that the second format was created for use
@@ -64,7 +64,7 @@ cape$Date <- ifelse(october, paste(cape$Date,"0", sep = ""), cape$Date)
 # Finally parse the result
 cape$Date <- parse_date_time(cape$Date, '%Y.%.m')
 
-# Convert cape into an xts Time-Series Object
+# Rename the rows using the date column
 rownames(cape) <- cape$Date
 
 # Drop the Date and DateFraction columns
