@@ -16,7 +16,7 @@ become disconnected with valuations. One criticism[^1] of his work is that
 prices are set by the market, not by valuations, and because of this no one can
 say when the market is "overvalued" or "undervalued."
 
-I intend to use the dataset explore the link between value and price, as well as
+I intend to use the dataset to explore the link between value and price, as well as
 test additional factors known to affect price movements.
 
 [^1]: [StockCharts Irrational Exuberance Review](
