@@ -305,9 +305,11 @@ $(document).ready(function () {
 </blockquote>
 <div id="what-is-the-structure-of-your-dataset" class="section level3">
 <h3>What is the structure of your dataset?</h3>
+<p>The dataset contains 1769 months of data covering 19 features, one of which being the date. The data covers the price, dividends and earnings for the US stock market since 1871. Also included are the Consumer Price Index (CPI) and the 10-Year Treasury rates. The first allows conversion of values from nominal to inflation adjusted levels. The Treasury rates are commonly used as a risk free benchmark.</p>
 </div>
 <div id="what-isare-the-main-features-of-interest-in-your-dataset" class="section level3">
 <h3>What is/are the main feature(s) of interest in your dataset?</h3>
+<p>Shiller’s CAPE ratio is the main feature of the dataset, allowing the analysis of market valuations over the extended time period. I also introduced momentum measures so that I can attempt to build a model for forecasting future returns.</p>
 </div>
 <div id="what-other-features-in-the-dataset-do-you-think-will-help-support-your-investigation-into-your-features-of-interest" class="section level3">
 <h3>What other features in the dataset do you think will help support your<br />
@@ -315,6 +317,7 @@ investigation into your feature(s) of interest?</h3>
 </div>
 <div id="did-you-create-any-new-variables-from-existing-variables-in-the-dataset" class="section level3">
 <h3>Did you create any new variables from existing variables in the dataset?</h3>
+<p>Categorical values were created to allow partitioning the data into periods of Rising and Falling states of Growth and Inflation. An Outlook variable was also created to label condin</p>
 </div>
 <div id="of-the-features-you-investigated-were-there-any-unusual-distributions-did-you-perform-any-operations-on-the-data-to-tidy-adjust-or-change-the-form-of-the-data-if-so-why-did-you-do-this" class="section level3">
 <h3>Of the features you investigated, were there any unusual distributions?<br />

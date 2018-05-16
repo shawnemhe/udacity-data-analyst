@@ -359,12 +359,27 @@ gather your observations and add your own if you have other thoughts!
 
 ### What is the structure of your dataset?
 
+The dataset contains 1769 months of data covering 19 features, one of which 
+being the date. The data covers the price, dividends and earnings for the US
+stock market since 1871. Also included are the Consumer Price Index (CPI) and
+the 10-Year Treasury rates. The first allows conversion of values from nominal 
+to inflation adjusted levels. The Treasury rates are commonly used as a risk
+free benchmark.
+
 ### What is/are the main feature(s) of interest in your dataset?
+
+Shiller's CAPE ratio is the main feature of the dataset, allowing the analysis
+of market valuations over the extended time period. I also introduced momentum
+measures so that I can attempt to build a model for forecasting future returns.
 
 ### What other features in the dataset do you think will help support your \
 investigation into your feature(s) of interest?
 
 ### Did you create any new variables from existing variables in the dataset?
+
+Categorical values were created to allow partitioning the data into periods of
+Rising and Falling states of Growth and Inflation. An Outlook variable was also
+created to label condin
 
 ### Of the features you investigated, were there any unusual distributions? \
 Did you perform any operations on the data to tidy, adjust, or change the form \
