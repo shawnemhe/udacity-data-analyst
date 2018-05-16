@@ -6,8 +6,7 @@ Stock Market Valuation by Shawn P Emhe II
 # Load packages
 
 library(ggplot2)
-library(lubridate)
-library(xts)
+library(gridExtra)
 ```
 
 In *Irrational Exhuberance*, Robert Shiller compiled over 100 years of data to
@@ -42,8 +41,8 @@ The `str` command shows that there are two date fields.
 1. Date: `r cape$Date[1:3]` ...
 2. DateFraction: `r cape$DateFraction[1:3]` ...
 
-Both use a YYYY.MM format, with the first numbering the months 01 thru 12 and the
-second representing months as a fraction of the year. I reviewed the 
+Both use a YYYY.MM format, with the first numbering the months 01 thru 12 and
+the second representing months as a fraction of the year. I reviewed the 
 background information[^2] on the dataset and the original excel file. The most
 logical explanation I could find was that the second format was created for use
 as the X-axis for the charts in the excel file. The first format was likely an
@@ -54,52 +53,62 @@ excel.
 http://www.econ.yale.edu/~shiller/data.htm)
 
 ```{r echo=FALSE, Parse_Dates}
-# Convert date to character format for lubridate parser
+# Convert date to character format for parsin
 cape$Date <- as.character(cape$Date)
 
-# Add trailing zeros to .1, so that it is interpretted as Oct and not Jan
+# The as.Date function requires a day, so a .1 needs to be appended to the dates
+# A 0 needs to be appended to October so that as.Date can differentiate it from
+# January
 october <- nchar(cape$Date) == 6
-cape$Date <- ifelse(october, paste(cape$Date,"0", sep = ""), cape$Date)
+cape$Date <- ifelse(october,
+                    paste(cape$Date, "0.1", sep = ""),
+                    paste(cape$Date, ".1", sep = ""))
 
 # Finally parse the result
-cape$Date <- parse_date_time(cape$Date, '%Y.%.m')
+cape$Date <- as.Date(cape$Date, '%Y.%m.%d')
 
 # Rename the rows using the date column
-rownames(cape) <- cape$Date
+#rownames(cape) <- cape$Date
 
 # Drop the Date and DateFraction columns
-cape <- subset(cape, select = -c(Date, DateFraction))
+cape <- subset(cape, select = -c(DateFraction))
 ```
 
-I converted the Date column into an R friendly POSIX format and dropped the 
-DateFraction column. I also set the date as the row name.
+I converted the values into an R friendly Date format and dropped the 
+DateFraction column.
 
 ## Feature Extraction
 
-As an additional preparation step I extracted related features that have been
-found to have an effect on price movements:
+As an additional preparation step I created several new factors from the data:
 
-1. Inflation: Rising prices create fear in the markets and can make stock
-prices drop.[^3]
-2. Momentum: Price advances and declines create feelings of greed and fear that
-lead to continuations.[^4]
+1. Inflation
+    + Measured as the annual % change in CPI
+    + As a categorical value: Rising or Falling
+2. Momentum
+    + % Change in price over the past year
+    + As a categorical value: Rising or Falling
+3. Forward Returns
+    + Measured as a %o ver 1, 3, 5 and 10 years
+    + Categorical value representing if the 1 year "Outlook" was Bullish or 
+    Bearish
 
-I created a `pct_change` function to extract the above two features from the 
-price and CPI columns. They are calculated as the percentage change over the 
-past 12 months.
 
-I also derived the future returns over several different time periods. I created
-a function used to shift the results of the `pct_change` function and used it to
-find the future returns over five forward looking periods to see how far, if at 
-all, returns could be estimated.
+Inflation was captured out of curiousity of its affect on future returns.[^3]
+Momentum was measured because studies have shown that price advances and
+declines can persist.[^4] I am  interested to see if it will make a good
+complement to value in predicting returns.
 
-Furthermore, I created a categorial variable to represent whether or not the 
-following period was bullish or bearish, getting to the heart of what most 
-investors care about. After all, can the market really be considered 
-*overvalued* if it is expected to keep rising in price?
+I created a `pct_change` function to extract the above features from the 
+price and CPI columns. I also created a function  to shift the results of the 
+`pct_change` for building the future returns vaules.
 
-[^3]:[Why does inflation make stock prices fall?](
-https://theconversation.com/why-does-inflation-make-stock-prices-fall-91874)
+Furthermore, I used categorial variations of the inflation and momentum to
+assit in exploring positive and negative conditions of each.
+
+[^3]:[Inflation's Impact on Stock Returns](
+https://www.investopedia.com/articles/investing/052913/
+inflations-impact-stock-returns.asp)
+)
 [^4]:[Returns to Buying Winners and Selling Losers](
 https://www.jstor.org/stable/2328882)
 
@@ -150,18 +159,28 @@ fwd_return <- function(vect, k = 12) {
 
 
 ```{r echo=FALSE, Feature_Extraction}
+# continuous measurments of growth and inflation
 cape$Momentum <- pct_change(cape$Price)
 cape$CPIChange <- pct_change(cape$CPI)
 
+# nominal variation
+growth <- cape$Momentum > 0
+cape$Growth <- ifelse(growth, "Rising", "Falling")
+inflation <- cape$CPIChange > 0
+cape$Inflation <- ifelse(inflation, "Rising", "Falling")
+cape$Growth <- factor(cape$Growth)
+cape$Inflation <- factor(cape$Inflation)
+
 cape$Fwd1yrReturns <- fwd_return(cape$Price)
-cape$Fwd2yrReturns <- fwd_return(cape$Price, k = 24)
 cape$Fwd3yrReturns <- fwd_return(cape$Price, k = 36)
-cape$Fwd4yrReturns <- fwd_return(cape$Price, k = 48)
 cape$Fwd5yrReturns <- fwd_return(cape$Price, k = 60)
+cape$Fwd10yrReturns <- fwd_return(cape$Price, k = 120)
 
 bullish <- cape$Fwd1yrReturns > 0
 cape$Outlook <- ifelse(bullish, "Bullish", "Bearish")
 cape$Outlook <- factor(cape$Outlook)
+
+
 
 ```
 
@@ -172,11 +191,164 @@ str(cape)
 summary(cape)
 ```
 
-The final dataset contains 1769 observations of 17 variables.
+The final dataset contains 1769 observations of 19 variables.
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots}
-qplot(cape$CAPE)
+### Price
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Price}
+theme_set(theme_bw())
+g <- ggplot(cape)
+
+plt1 <- g + geom_line(aes(Date, Price))
+plt2 <- g + geom_line(aes(Date, RealPrice))
+plt3 <- plt1 + scale_y_log10() + labs(y = "Log Price")
+plt4 <- plt2 + scale_y_log10() + labs(y = "Log RealPrice")
+
+grid.arrange(plt1, plt2, plt3, plt4, ncol = 2)
 ```
+
+Because the value of price is measured over time it is best plotted as a 
+timeseries. The scale of the first plot makes it difficult to compare the data
+starting in the late 1800s to more recent years. The dataset already contains a 
+transformed version in the form of RealPrice, which has been adjusted for
+inflation. Taking the log10 of the prices makes them even more readable, which
+is a natural transformation because price growth is geometric. The final
+inflation adjusted and log transformed graph makes it easy to compare the growth
+and recessions over the entire history of the dataset.
+
+### Dividends and Earnings
+
+Logically, the dividends and earnings should benefit from the same
+transformations.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Dividend}
+#theme_set(theme_bw())
+g <- ggplot(cape)
+
+plt1 <- g + geom_line(aes(Date, Dividend))
+plt2 <- g + geom_line(aes(Date, RealDividend))
+plt3 <- plt1 + scale_y_log10() + labs(y = "Log Dividend")
+plt4 <- plt2 + scale_y_log10() + labs(y = "Log RealDividend")
+
+grid.arrange(plt1, plt2, plt3, plt4, ncol = 2)
+```
+
+Dividends show the same steady growth over time as price. But he second half of 
+the data appears to have much lower variance than the first half. This is the 
+value in the dataset that companies have the most control over, being able to 
+choose how much of their profits are issued as dividends vs being used for 
+things like research and development and buybacks. That makes me wonder if the
+difference in time is due to outside influences like tax law or investor 
+demands, which can influence corporate decisions.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Earnings}
+theme_set(theme_bw())
+g <- ggplot(cape)
+
+plt1 <- g + geom_line(aes(Date, Earnings))
+plt2 <- g + geom_line(aes(Date, RealEarnings))
+plt3 <- plt1 + scale_y_log10() + labs(y = "Log Earnings")
+plt4 <- plt2 + scale_y_log10() + labs(y = "Log RealEarnings")
+
+grid.arrange(plt1, plt2, plt3, plt4, ncol = 2)
+```
+
+An interesting feature of the earnings data are the two significant dips that 
+occuring during the Great Depression and Great Recession of the 1930's and 2008.
+Earnings appear to have been impacted even harder than stock prices.
+
+### Interest Rates
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Interest_Rates}
+plt1 <- g + geom_line(aes(Date, GS10))
+plt2 <- g + geom_histogram(aes(GS10))
+plt3 <- plt2 + scale_x_log10() + labs(x = "LogGS10")
+
+grid.arrange(plt1, plt2, plt3)
+summary(cape$GS10)
+```
+
+The 10-Year Treasury rates (GS10) show a huge spike in the 1970s as the Fed and
+policy makers sought to curb runaway inflation. There is a peak around 2% that
+could easily be lost with a wider binwidth. But transforming the data to log
+brings out out even more, suggesting that the date is bimodal. The 10 year rate
+is heavily influenced by the Federal Funds rate. Could the two peaks be the 
+default speeds of the Fed for boosting and taming the economy, with the tails
+representing extreme reactions to recession and inflation?
+
+### CAPE
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, CAPE}
+plt1 <- g + geom_histogram(aes(CAPE))
+plt2 <- plt1 + scale_x_log10(breaks = seq(0, 45, 5)) + labs(x = "LogCAPE")
+
+grid.arrange(plt1, plt2)
+```
+
+CAPE, the Cyclicaly Adjusted Price to Earnings Ratio, is the heart of the 
+dataset. Robert Shiller created the ratio to smooth for inflation and business
+cycle affects by dividing price by the inflation adjusted 10 year average off 
+the earnings.
+
+Transforming to log scale makes it easier to see an important characteristic
+that is not as easy to see in original form. The tails of the distribution 
+represent the cheapest and most expensive readings for the market. However, the
+normal scale of the x axis doesn't account for the fact that the bins at the 
+lower end represent proportionately larger percentage differences in price per
+earnings. For example, the difference between a value of 4 and 5 means paying 
+25% more for earnings, whereas 40 to 41 is only and increase of 2.5%. The log
+scale balances the emphasis placed on the rare occurance of valuations at both
+ends of the spectrum.
+
+### Momentum
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Momentum}
+g + geom_histogram(aes(Momentum))
+summary(cape$Momentum)
+```
+
+Aside from the outliers, Momentum appears normally distributed. The mean annual
+return was 6%.
+
+### Inflation
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Inflation}
+g + geom_histogram(aes(CPIChange))
+summary(cape$CPIChange)
+```
+
+The distribution of CPIChange shows very high kurtosis, with a mean of about 2%.
+The min and max show just how far inflation and deflation can go.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Economic_Seasons}
+# The first 12 rows contain NA values for both Inflation and growth
+plt1 <- ggplot(cape[-(1:12),]) + geom_bar(aes(Inflation))
+
+plt2 <- ggplot(cape[-(1:12),]) + geom_bar(aes(Growth))
+grid.arrange(plt1, plt2, ncol = 2)
+```
+
+The bar charts show that the US has spent most of period in a state of rising
+inflation and growth.
+
+### Forward Returns
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Forward_Returns}
+plt1 <- g + geom_histogram(aes(Fwd1yrReturns))
+plt2 <- g + geom_histogram(aes(Fwd3yrReturns))
+plt3 <- g + geom_histogram(aes(Fwd5yrReturns))
+plt4 <- g + geom_histogram(aes(Fwd10yrReturns))
+
+grid.arrange(plt1, plt2, plt3, plt4, ncol = 2)
+summary(cape[c("Fwd1yrReturns", "Fwd3yrReturns",
+               "Fwd5yrReturns", "Fwd10yrReturns")])
+```
+
+An interesting feature of the forward returns is that they become more
+positively skewed the longer the duration. That creates a strong argument having 
+for longer term investing horizons.
+
 
 
 # Univariate Analysis
