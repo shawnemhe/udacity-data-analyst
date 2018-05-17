@@ -222,9 +222,6 @@ Logically, the dividends and earnings should benefit from the same
 transformations.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Dividend}
-#theme_set(theme_bw())
-g <- ggplot(cape)
-
 plt1 <- g + geom_line(aes(Date, Dividend))
 plt2 <- g + geom_line(aes(Date, RealDividend))
 plt3 <- plt1 + scale_y_log10() + labs(y = "Log Dividend")
@@ -242,9 +239,6 @@ difference in time is due to outside influences like tax law or investor
 demands, which can influence corporate decisions.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Earnings}
-theme_set(theme_bw())
-g <- ggplot(cape)
-
 plt1 <- g + geom_line(aes(Date, Earnings))
 plt2 <- g + geom_line(aes(Date, RealEarnings))
 plt3 <- plt1 + scale_y_log10() + labs(y = "Log Earnings")
@@ -264,7 +258,11 @@ plt1 <- g + geom_line(aes(Date, GS10))
 plt2 <- g + geom_histogram(aes(GS10))
 plt3 <- plt2 + scale_x_log10() + labs(x = "LogGS10")
 
-grid.arrange(plt1, plt2, plt3)
+#grid.arrange(plt1, plt2, plt3)
+print(plt1)
+print(plt2)
+print(plt3)
+
 summary(cape$GS10)
 ```
 
@@ -346,16 +344,37 @@ summary(cape[c("Fwd1yrReturns", "Fwd3yrReturns",
 ```
 
 An interesting feature of the forward returns is that they become more
-positively skewed the longer the duration. That creates a strong argument having 
-for longer term investing horizons.
+positively skewed the longer the duration. This is due to compounding effects,
+and the lower limit on price (the stock market has never been priced below 0).
 
+A logical transformation is to convert all of the returns to their compound
+annual growth rate (CAGR). This will also make it easier to compare them to
+each other.
 
+```{r echo=FALSE, message=FALSE, warning=FALSE, CAGR_Forward_Returns}
+# this function will convert the returns to a CAGR
+annualize <- function(r,t) {
+  return((1 + r)^(1 / t) - 1)
+}
+
+plt1 <- g + geom_histogram(aes(Fwd1yrReturns))
+plt2 <- g + geom_histogram(aes(annualize(Fwd3yrReturns, 3))) +
+                                    labs(x = "3 Year CAGR")
+plt3 <- g + geom_histogram(aes(annualize(Fwd5yrReturns, 5))) +
+                                    labs(x = "5 Year CAGR")
+plt4 <- g + geom_histogram(aes(annualize(Fwd10yrReturns, 10))) +
+                                    labs(x = "10 Year CAGR")
+
+grid.arrange(plt1, plt2, plt3, plt4, ncol = 2)
+summary(cape$Fwd1yrReturns)
+summary(annualize(cape$Fwd3yrReturns, 3))
+summary(annualize(cape$Fwd5yrReturns, 5))
+summary(annualize(cape$Fwd10yrReturns, 10))
+```
+
+The mean CAGRS are all lower than the mean 1 year return.
 
 # Univariate Analysis
-
-> **Tip**: Now that you've completed your univariate explorations, it's time to
-reflect on and summarize what you've found. Use the questions below to help you
-gather your observations and add your own if you have other thoughts!
 
 ### What is the structure of your dataset?
 
@@ -375,28 +394,82 @@ measures so that I can attempt to build a model for forecasting future returns.
 ### What other features in the dataset do you think will help support your \
 investigation into your feature(s) of interest?
 
+CPI is crucial in transforming the data over time to account for inflation. In
+addition, I expect to see that inflation itself will have affects on stock
+returns. I believe this will also be the case for interest rates, which are 
+often used by governments to tame inflation and/or boost economic growth.
+
 ### Did you create any new variables from existing variables in the dataset?
 
 Categorical values were created to allow partitioning the data into periods of
-Rising and Falling states of Growth and Inflation. An Outlook variable was also
-created to label condin
+Rising and Falling states of Growth and Inflation. An Outlook categorical 
+variable was also created to test if predicting bullish and bearish periods was
+more feasible than predicting the specific level of return.
 
 ### Of the features you investigated, were there any unusual distributions? \
 Did you perform any operations on the data to tidy, adjust, or change the form \
 of the data? If so, why did you do this?
 
+Log transformations were applied to many of the visualizations to reduce postive
+skew. They are also a natural transformation to apply because they convert the
+expontential growth of continuous componding into an additive one.
+
+I also took advantage of the inflation adjustments that were already in the data 
+set to help visualize changes in the variables over time.
 
 # Bivariate Plots Section
 
-> **Tip**: Based on what you saw in the univariate plots, what relationships
-between variables might be interesting to look at in this section? Don't limit
-yourself to relationships between a main output feature and one of the
-supporting variables. Try to look at relationships between supporting variables
-as well.
 
-```{r echo=FALSE, Bivariate_Plots}
+```{r echo=FALSE, message=FALSE, warning=FALSE, Cape_to_Returns}
+plt1 <- g + geom_point(aes(CAPE, Fwd1yrReturns))
+plt2 <- g + geom_point(aes(CAPE, Fwd3yrReturns))
+plt3 <- g + geom_point(aes(CAPE, Fwd10yrReturns))
+plt4 <- g + geom_point(aes(CAPE, Fwd10yrReturns))
 
+print(plt1)
+print(plt2)
+print(plt3)
+print(plt4)
 ```
+
+The cape ratio is negatively correlated to forward returns, but the effect is
+more prominent 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Normalized_Cape_to_Returns}
+plt1 <- g + geom_point(aes(CAPE, Fwd1yrReturns)) + scale_x_log10()
+plt2 <- g + geom_point(aes(CAPE, annualize(Fwd3yrReturns, 3))) + scale_x_log10()
+plt3 <- g + geom_point(aes(CAPE, annualize(Fwd10yrReturns, 5))) + scale_x_log10()
+plt4 <- g + geom_point(aes(CAPE, annualize(Fwd10yrReturns, 10))) + scale_x_log10()
+
+print(plt1)
+print(plt2)
+print(plt3)
+print(plt4)
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Momentum_Returns}
+plt1 <- ggplot(cape, aes((CPIChange), (Fwd1yrReturns))) + geom_point() + geom_smooth(method = "lm") + scale_y_sqrt()
+plt2 <- g + geom_point(aes(Momentum, Fwd3yrReturns))
+plt3 <- g + geom_point(aes(Momentum, Fwd5yrReturns))
+plt4 <- g + geom_point(aes(Momentum, Fwd10yrReturns))
+
+print(plt1)
+print(plt2)
+print(plt3)
+print(plt4)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, LogMomentum_Returns}
+plt1 <- ggplot(cape[-(1:12),]) + geom_boxplot(aes(Growth, Fwd1yrReturns))
+plt2 <- ggplot(cape[-(1:12),]) + geom_boxplot(aes(Growth, Fwd3yrReturns))
+
+print(plt1)
+print(plt2)
+```
+
+### Dividends to Interest Rates
+
 
 # Bivariate Analysis
 
@@ -423,7 +496,7 @@ you plan on creating any mathematical models, this is the section where you
 will do that.
 
 ```{r echo=FALSE, Multivariate_Plots}
-
+g + geom_jitter(aes(CAPE, Fwd3yrReturns, col = Growth)) + scale_x_log10()
 ```
 
 # Multivariate Analysis
