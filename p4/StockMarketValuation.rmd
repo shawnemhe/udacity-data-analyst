@@ -372,7 +372,15 @@ summary(annualize(cape$Fwd5yrReturns, 5))
 summary(annualize(cape$Fwd10yrReturns, 10))
 ```
 
-The mean CAGRS are all lower than the mean 1 year return.
+The oft referred to fat tails of the returns are present and a slight negative 
+skew is visible. This is charactersitic of the risks investors face; extreme 
+returns occur more often than they would with a normal distribution, with 
+greater than normal occurrence negative returns.
+
+The mean annual returns decrease as the forward looking periods decrease. This
+is a result of the negative skew and it's affect on compounding. Large losses
+require even larger gains for recovery, causing actual CAGRs to be lower than the
+mean Fwd1yrReturns.
 
 # Univariate Analysis
 
@@ -410,12 +418,16 @@ more feasible than predicting the specific level of return.
 Did you perform any operations on the data to tidy, adjust, or change the form \
 of the data? If so, why did you do this?
 
-Log transformations were applied to many of the visualizations to reduce postive
+Log transformations were applied to prices, dividends and earnings to reduce postive
 skew. They are also a natural transformation to apply because they convert the
-expontential growth of continuous componding into an additive one.
+expontential growth of continuous componding into an additive one. The CAPE ratio
+is generated from those variables and benefited from the same transformation.
 
 I also took advantage of the inflation adjustments that were already in the data 
 set to help visualize changes in the variables over time.
+
+Last, I transformed the FwdXyrReturns to CAGRs so that they could be directly 
+compared.
 
 # Bivariate Plots Section
 
@@ -433,7 +445,8 @@ print(plt4)
 ```
 
 The cape ratio is negatively correlated to forward returns, but the effect is
-more prominent 
+less prominent in the Fwd1yrReturns. It looks as though the CAPE might be less 
+valuable in near term forecasting than for making long term predictions.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Normalized_Cape_to_Returns}
 plt1 <- g + geom_point(aes(CAPE, Fwd1yrReturns)) + scale_x_log10()
@@ -467,6 +480,11 @@ plt2 <- ggplot(cape[-(1:12),]) + geom_boxplot(aes(Growth, Fwd3yrReturns))
 print(plt1)
 print(plt2)
 ```
+Separating the data into Rising and Falling Growth periods does not appear to
+provide any benefit at all in predicting higher returns. However, it does tighten
+the distribution and redue the tails, a particular benefit in reducing risk. This 
+is confirmation of what I have learned from studying trend following in the past:
+the main benefit is not finding higher returns but in avoiding the worst.
 
 ### Dividends to Interest Rates
 
