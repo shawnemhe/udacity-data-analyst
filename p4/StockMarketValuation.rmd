@@ -344,8 +344,9 @@ summary(cape[c("Fwd1yrReturns", "Fwd3yrReturns",
 ```
 
 An interesting feature of the forward returns is that they become more
-positively skewed the longer the duration. This is due to compounding effects,
-and the lower limit on price (the stock market has never been priced below 0).
+positively skewed the longer the duration. This makes sense after seeing it.
+The skew is the affect of compounding, but there is a lower limit due to prices
+having never been below 0.
 
 A logical transformation is to convert all of the returns to their compound
 annual growth rate (CAGR). This will also make it easier to compare them to
@@ -379,8 +380,17 @@ greater than normal occurrence negative returns.
 
 The mean annual returns decrease as the forward looking periods decrease. This
 is a result of the negative skew and it's affect on compounding. Large losses
-require even larger gains for recovery, causing actual CAGRs to be lower than the
-mean Fwd1yrReturns.
+require even larger gains for recovery, causing actual CAGRs to be lower than 
+the mean Fwd1yrReturns.
+
+After seeing the transformed values I decided to store them easier access during
+rest of the analysis.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Save_CAGR}
+cape$Fwd3yrCAGR <- annualize(cape$Fwd3yrReturns, 3)
+cape$Fwd5yrCAGR <- annualize(cape$Fwd5yrReturns, 5)
+cape$Fwd10yrCAGR <- annualize(cape$Fwd10yrReturns, 10)
+```
 
 # Univariate Analysis
 
@@ -431,12 +441,16 @@ compared.
 
 # Bivariate Plots Section
 
+### CAPE and Forward Returns
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Cape_to_Returns}
+# g needs to be updated now that there are new features in the df
+g <- ggplot(cape)
+
 plt1 <- g + geom_point(aes(CAPE, Fwd1yrReturns))
-plt2 <- g + geom_point(aes(CAPE, Fwd3yrReturns))
-plt3 <- g + geom_point(aes(CAPE, Fwd10yrReturns))
-plt4 <- g + geom_point(aes(CAPE, Fwd10yrReturns))
+plt2 <- g + geom_point(aes(CAPE, Fwd3yrCAGR))
+plt3 <- g + geom_point(aes(CAPE, Fwd5yrCAGR))
+plt4 <- g + geom_point(aes(CAPE, Fwd10yrCAGR))
 
 print(plt1)
 print(plt2)
@@ -444,15 +458,18 @@ print(plt3)
 print(plt4)
 ```
 
-The cape ratio is negatively correlated to forward returns, but the effect is
+There appears to be a negative correlation to forward returns, but the effect is
 less prominent in the Fwd1yrReturns. It looks as though the CAPE might be less 
 valuable in near term forecasting than for making long term predictions.
 
+The plots also look like they could benefit from using the Log10 transformed
+version of CAPE.
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Normalized_Cape_to_Returns}
-plt1 <- g + geom_point(aes(CAPE, Fwd1yrReturns)) + scale_x_log10()
-plt2 <- g + geom_point(aes(CAPE, annualize(Fwd3yrReturns, 3))) + scale_x_log10()
-plt3 <- g + geom_point(aes(CAPE, annualize(Fwd10yrReturns, 5))) + scale_x_log10()
-plt4 <- g + geom_point(aes(CAPE, annualize(Fwd10yrReturns, 10))) + scale_x_log10()
+plt1 <- plt1 + scale_x_log10() + labs(x = "Log10(CAPE)")
+plt2 <- plt2 + scale_x_log10() + labs(x = "Log10(CAPE)")
+plt3 <- plt3 + scale_x_log10() + labs(x = "Log10(CAPE)")
+plt4 <- plt4 + scale_x_log10() + labs(x = "Log10(CAPE)")
 
 print(plt1)
 print(plt2)
@@ -460,12 +477,13 @@ print(plt3)
 print(plt4)
 ```
 
+### Momentum and Forward Returns
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Momentum_Returns}
-plt1 <- ggplot(cape, aes((CPIChange), (Fwd1yrReturns))) + geom_point() + geom_smooth(method = "lm") + scale_y_sqrt()
-plt2 <- g + geom_point(aes(Momentum, Fwd3yrReturns))
-plt3 <- g + geom_point(aes(Momentum, Fwd5yrReturns))
-plt4 <- g + geom_point(aes(Momentum, Fwd10yrReturns))
+plt1 <- g + geom_point(aes(Momentum, Fwd1yrReturns))
+plt2 <- g + geom_point(aes(Momentum, Fwd3yrCAGR))
+plt3 <- g + geom_point(aes(Momentum, Fwd5yrCAGR))
+plt4 <- g + geom_point(aes(Momentum, Fwd10yrCAGR))
 
 print(plt1)
 print(plt2)
@@ -473,18 +491,40 @@ print(plt3)
 print(plt4)
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, LogMomentum_Returns}
-plt1 <- ggplot(cape[-(1:12),]) + geom_boxplot(aes(Growth, Fwd1yrReturns))
-plt2 <- ggplot(cape[-(1:12),]) + geom_boxplot(aes(Growth, Fwd3yrReturns))
+There doesn't appear to be a strong correlation between Momentum and forward
+returns. There is some overplotting, and it looks like there are outliers. It
+might help to zoom in and add some transparency to the points.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Momentum_ClearPlot}
+plt1 <-ggplot(aes(Momentum, Fwd1yrReturns), data = cape) +
+  geom_point(alpha = 1/2) + xlim(-.5, .5)
+plt2 <-ggplot(aes(Momentum, Fwd3yrCAGR), data = cape) +
+  geom_point(alpha = 1/2) + xlim(-.5, .5)
+plt3 <-ggplot(aes(Momentum, Fwd5yrCAGR), data = cape) +
+  geom_point(alpha = 1/2) + xlim(-.5, .5)
+plt4 <-ggplot(aes(Momentum, Fwd10yrCAGR), data = cape) +
+  geom_point(alpha = 1/2) + xlim(-.5, .5)
 
 print(plt1)
 print(plt2)
+print(plt3)
+print(plt4)
 ```
+
+At first glance
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Growth_to_CAGR}
+# trim the first 12 rows to remove NA values
+ggplot(aes(Growth, Fwd1yrReturns), data = cape[-(1:12),]) + geom_boxplot()
+ggplot(aes(Growth, Fwd3yrCAGR), data = cape[-(1:12),]) + geom_boxplot()
+```
+
 Separating the data into Rising and Falling Growth periods does not appear to
-provide any benefit at all in predicting higher returns. However, it does tighten
-the distribution and redue the tails, a particular benefit in reducing risk. This 
-is confirmation of what I have learned from studying trend following in the past:
-the main benefit is not finding higher returns but in avoiding the worst.
+provide any benefit at all in predicting higher returns. However, it does
+tighten the distribution and reduce the tails, a particular benefit in reducing 
+risk. This is confirmation of what I have learned from studying trend following 
+in the past: the main benefit is not finding higher returns but in avoiding the 
+worst.
 
 ### Dividends to Interest Rates
 
