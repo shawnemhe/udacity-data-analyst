@@ -13,10 +13,8 @@ In *Irrational Exhuberance*, Robert Shiller compiled over 100 years of data to
 demonstrate how market dynamics create cycles in which the stock market prices
 become disconnected with valuations. One criticism[^1] of his work is that
 prices are set by the market, not by valuations, and because of this no one can
-say when the market is "overvalued" or "undervalued."
-
-I intend to use the dataset to explore the link between value and price, as well as
-test additional factors known to affect price movements.
+say when the market is "overvalued" or "undervalued." I intend to use the 
+dataset to explore the link between value and price.
 
 [^1]: [StockCharts Irrational Exuberance Review](
 http://stockcharts.com/school/doku.php?id=chart_school:overview:
@@ -41,7 +39,7 @@ The `str` command shows that there are two date fields.
 1. Date: `r cape$Date[1:3]` ...
 2. DateFraction: `r cape$DateFraction[1:3]` ...
 
-Both use a YYYY.MM format, with the first numbering the months 01 thru 12 and
+Both use a YYYY.MM format, with the first numbering the months 01 through 12 and
 the second representing months as a fraction of the year. I reviewed the 
 background information[^2] on the dataset and the original excel file. The most
 logical explanation I could find was that the second format was created for use
@@ -88,28 +86,24 @@ As an additional preparation step I created several new factors from the data:
     + % Change in price over the past year
     + As a categorical value: Rising or Falling
 3. Forward Returns
-    + Measured as a %o ver 1, 3, 5 and 10 years
+    + Measured as a % over 1, 3, 5 and 10 years
     + Categorical value representing if the 1 year "Outlook" was Bullish or 
     Bearish
 
 
-Inflation was captured out of curiousity of its affect on future returns.[^3]
+Inflation was captured out of curiosity of its affect on future returns.
 Momentum was measured because studies have shown that price advances and
-declines can persist.[^4] I am  interested to see if it will make a good
+declines can persist.[^3] I am  interested to see if it will make a good
 complement to value in predicting returns.
 
 I created a `pct_change` function to extract the above features from the 
 price and CPI columns. I also created a function  to shift the results of the 
-`pct_change` for building the future returns vaules.
+`pct_change` for building the future returns values.
 
-Furthermore, I used categorial variations of the inflation and momentum to
-assit in exploring positive and negative conditions of each.
+Furthermore, I used categorical variations of the inflation and momentum to
+assist in exploring positive and negative conditions of each.
 
-[^3]:[Inflation's Impact on Stock Returns](
-https://www.investopedia.com/articles/investing/052913/
-inflations-impact-stock-returns.asp)
-)
-[^4]:[Returns to Buying Winners and Selling Losers](
+[^3]:[Returns to Buying Winners and Selling Losers](
 https://www.jstor.org/stable/2328882)
 
 ```{r echo=FALSE, pct_change_function}
@@ -165,9 +159,9 @@ cape$CPIChange <- pct_change(cape$CPI)
 
 # nominal variation
 growth <- cape$Momentum > 0
-cape$Growth <- ifelse(growth, "Rising", "Falling")
+cape$Growth <- ifelse(growth, "Expansion", "Recession")
 inflation <- cape$CPIChange > 0
-cape$Inflation <- ifelse(inflation, "Rising", "Falling")
+cape$Inflation <- ifelse(inflation, "Inflation", "Deflation")
 cape$Growth <- factor(cape$Growth)
 cape$Inflation <- factor(cape$Inflation)
 
@@ -208,7 +202,7 @@ grid.arrange(plt1, plt2, plt3, plt4, ncol = 2)
 ```
 
 Because the value of price is measured over time it is best plotted as a 
-timeseries. The scale of the first plot makes it difficult to compare the data
+time series. The scale of the first plot makes it difficult to compare the data
 starting in the late 1800s to more recent years. The dataset already contains a 
 transformed version in the form of RealPrice, which has been adjusted for
 inflation. Taking the log10 of the prices makes them even more readable, which
@@ -230,13 +224,12 @@ plt4 <- plt2 + scale_y_log10() + labs(y = "Log RealDividend")
 grid.arrange(plt1, plt2, plt3, plt4, ncol = 2)
 ```
 
-Dividends show the same steady growth over time as price. But he second half of 
-the data appears to have much lower variance than the first half. This is the 
-value in the dataset that companies have the most control over, being able to 
-choose how much of their profits are issued as dividends vs being used for 
-things like research and development and buybacks. That makes me wonder if the
-difference in time is due to outside influences like tax law or investor 
-demands, which can influence corporate decisions.
+Dividends show the same steady growth over time as price. But the second half of 
+the data appears to have much lower variance than the first half. I wonder if
+this is due to the decision to start taxing dividends in 1954.[^4]
+
+[^4]:[A brief history of dividend tax rates](
+http://www.dividend.com/taxes/a-brief-history-of-dividend-tax-rates/)
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Earnings}
 plt1 <- g + geom_line(aes(Date, Earnings))
@@ -248,7 +241,7 @@ grid.arrange(plt1, plt2, plt3, plt4, ncol = 2)
 ```
 
 An interesting feature of the earnings data are the two significant dips that 
-occuring during the Great Depression and Great Recession of the 1930's and 2008.
+occurring during the Great Depression and Great Recession of the 1930's and 2008.
 Earnings appear to have been impacted even harder than stock prices.
 
 ### Interest Rates
@@ -268,8 +261,8 @@ summary(cape$GS10)
 
 The 10-Year Treasury rates (GS10) show a huge spike in the 1970s as the Fed and
 policy makers sought to curb runaway inflation. There is a peak around 2% that
-could easily be lost with a wider binwidth. But transforming the data to log
-brings out out even more, suggesting that the date is bimodal. The 10 year rate
+could easily be lost with a wider bin width. But transforming the data to log
+brings out out even more, suggesting that the date is bi-modal. The 10 year rate
 is heavily influenced by the Federal Funds rate. Could the two peaks be the 
 default speeds of the Fed for boosting and taming the economy, with the tails
 representing extreme reactions to recession and inflation?
@@ -284,7 +277,7 @@ plt2 <- plt1 + scale_x_log10(breaks = seq(0, 45, 5)) + labs(x = "LogCAPE")
 grid.arrange(plt1, plt2)
 ```
 
-CAPE, the Cyclicaly Adjusted Price to Earnings Ratio, is the heart of the 
+CAPE, the Cyclically Adjusted Price to Earnings Ratio, is the heart of the 
 dataset. Robert Shiller created the ratio to smooth for inflation and business
 cycle affects by dividing price by the inflation adjusted 10 year average off 
 the earnings.
@@ -296,7 +289,7 @@ normal scale of the x axis doesn't account for the fact that the bins at the
 lower end represent proportionately larger percentage differences in price per
 earnings. For example, the difference between a value of 4 and 5 means paying 
 25% more for earnings, whereas 40 to 41 is only and increase of 2.5%. The log
-scale balances the emphasis placed on the rare occurance of valuations at both
+scale balances the emphasis placed on the rare occurrence of valuations at both
 ends of the spectrum.
 
 ### Momentum
@@ -307,7 +300,7 @@ summary(cape$Momentum)
 ```
 
 Aside from the outliers, Momentum appears normally distributed. The mean annual
-return was 6%.
+return was `r round(mean(cape$Momentum, na.rm = TRUE) * 100, 2) `%.
 
 ### Inflation
 
@@ -316,7 +309,8 @@ g + geom_histogram(aes(CPIChange))
 summary(cape$CPIChange)
 ```
 
-The distribution of CPIChange shows very high kurtosis, with a mean of about 2%.
+The distribution of CPIChange shows very high kurtosis, with a mean of about
+`r round(mean(cape$CPIChange, na.rm = TRUE) * 100, 2)`%.
 The min and max show just how far inflation and deflation can go.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Economic_Seasons}
@@ -367,14 +361,18 @@ plt4 <- g + geom_histogram(aes(annualize(Fwd10yrReturns, 10))) +
                                     labs(x = "10 Year CAGR")
 
 grid.arrange(plt1, plt2, plt3, plt4, ncol = 2)
+print("1 year forward returns")
 summary(cape$Fwd1yrReturns)
+print("3 year forward returns")
 summary(annualize(cape$Fwd3yrReturns, 3))
+print("5 year forward returns")
 summary(annualize(cape$Fwd5yrReturns, 5))
+print("10 year forward returns")
 summary(annualize(cape$Fwd10yrReturns, 10))
 ```
 
 The oft referred to fat tails of the returns are present and a slight negative 
-skew is visible. This is charactersitic of the risks investors face; extreme 
+skew is visible. This is characteristic of the risks investors face; extreme 
 returns occur more often than they would with a normal distribution, with 
 greater than normal occurrence negative returns.
 
@@ -390,18 +388,25 @@ rest of the analysis.
 cape$Fwd3yrCAGR <- annualize(cape$Fwd3yrReturns, 3)
 cape$Fwd5yrCAGR <- annualize(cape$Fwd5yrReturns, 5)
 cape$Fwd10yrCAGR <- annualize(cape$Fwd10yrReturns, 10)
+
+# g needs to be updated now that there are new features in the df
+g <- ggplot(cape)
 ```
 
 # Univariate Analysis
 
 ### What is the structure of your dataset?
 
-The dataset contains 1769 months of data covering 19 features, one of which 
+The dataset contains 1769 months of data covering 22 features, one of which 
 being the date. The data covers the price, dividends and earnings for the US
 stock market since 1871. Also included are the Consumer Price Index (CPI) and
 the 10-Year Treasury rates. The first allows conversion of values from nominal 
 to inflation adjusted levels. The Treasury rates are commonly used as a risk
 free benchmark.
+
+There are also many NA values in the data because of the numerous values created
+from running calculations. CAPE, for example, requires 10 years of earnings 
+values to smooth before it begins showing values.
 
 ### What is/are the main feature(s) of interest in your dataset?
 
@@ -415,9 +420,13 @@ investigation into your feature(s) of interest?
 CPI is crucial in transforming the data over time to account for inflation. In
 addition, I expect to see that inflation itself will have affects on stock
 returns. I believe this will also be the case for interest rates, which are 
-often used by governments to tame inflation and/or boost economic growth.
+often used by governments to boost economic growth.
 
 ### Did you create any new variables from existing variables in the dataset?
+
+A measure of momentum and inflation were created to show their running 12 month
+rates of change. Forward returns were also calculated and then transformed into
+compound annual growth rates (CAGRs) during the analysis.
 
 Categorical values were created to allow partitioning the data into periods of
 Rising and Falling states of Growth and Inflation. An Outlook categorical 
@@ -428,34 +437,65 @@ more feasible than predicting the specific level of return.
 Did you perform any operations on the data to tidy, adjust, or change the form \
 of the data? If so, why did you do this?
 
-Log transformations were applied to prices, dividends and earnings to reduce postive
-skew. They are also a natural transformation to apply because they convert the
-expontential growth of continuous componding into an additive one. The CAPE ratio
-is generated from those variables and benefited from the same transformation.
+Log transformations were applied to prices, dividends and earnings to reduce 
+positive skew. They are also a natural transformation to apply because they 
+convert the exponential growth of continuous compounding into an additive one. 
+The CAPE ratio is generated from those variables and benefited from the same 
+transformation.
 
 I also took advantage of the inflation adjustments that were already in the data 
 set to help visualize changes in the variables over time.
 
-Last, I transformed the FwdXyrReturns to CAGRs so that they could be directly 
-compared.
+Last, I transformed the different forward return measures to annual measures to 
+reduce skew and so that they could be directly compared.
 
 # Bivariate Plots Section
 
+### Stock Features
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Stock_Features}
+plt1 <- g + geom_point(aes((RealPrice), (RealEarnings)))
+plt2 <- g + geom_point(aes((RealPrice), (RealDividend)))
+plt3 <- g + geom_point(aes((RealDividend), (RealEarnings)))
+
+grid.arrange(plt1, plt2, plt3, ncol = 2)
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Stock_Features_Alpha}
+plt1 <- g + geom_point(aes(log10(RealPrice), 
+                           log10(RealEarnings)), alpha = 1/10)
+plt2 <- g + geom_point(aes(log10(RealPrice), 
+                           log10(RealDividend)), alpha = 1/10)
+plt3 <- g + geom_point(aes(log10(RealDividend),
+                           log10(RealEarnings)), alpha = 1/10)
+
+grid.arrange(plt1, plt2, plt3, ncol = 2)
+
+```
+
+No surprises here, all of the stock features are highly correlated. Applying
+the log transform and transparency to reduce over plotting shows that they have 
+strong linear relationships and have varied together over time.
+
 ### CAPE and Forward Returns
+```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_vs_returns}
+# Convenience function created because several features will be plotted
+# against forward returns
+plot_vs_returns <- function(df, x, x_label, alpha = 1) {
+  g <- ggplot(aes(x = x), data = df)
+  plt1 <- g + geom_point(aes(y = Fwd1yrReturns), alpha = alpha) + labs(x = x_label)
+  plt2 <- g + geom_point(aes(y = Fwd3yrCAGR), alpha = alpha) + labs(x = x_label)
+  plt3 <- g + geom_point(aes(y = Fwd5yrCAGR), alpha = alpha) + labs(x = x_label)
+  plt4 <- g + geom_point(aes(y = Fwd10yrCAGR), alpha = alpha) + labs(x = x_label)
+  
+  grid.arrange(plt1, plt2, plt3, plt4)
+}
+```
+
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Cape_to_Returns}
-# g needs to be updated now that there are new features in the df
-g <- ggplot(cape)
-
-plt1 <- g + geom_point(aes(CAPE, Fwd1yrReturns))
-plt2 <- g + geom_point(aes(CAPE, Fwd3yrCAGR))
-plt3 <- g + geom_point(aes(CAPE, Fwd5yrCAGR))
-plt4 <- g + geom_point(aes(CAPE, Fwd10yrCAGR))
-
-print(plt1)
-print(plt2)
-print(plt3)
-print(plt4)
+plot_vs_returns(cape, cape$CAPE, "CAPE")
 ```
 
 There appears to be a negative correlation to forward returns, but the effect is
@@ -466,102 +506,228 @@ The plots also look like they could benefit from using the Log10 transformed
 version of CAPE.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Normalized_Cape_to_Returns}
-plt1 <- plt1 + scale_x_log10() + labs(x = "Log10(CAPE)")
-plt2 <- plt2 + scale_x_log10() + labs(x = "Log10(CAPE)")
-plt3 <- plt3 + scale_x_log10() + labs(x = "Log10(CAPE)")
-plt4 <- plt4 + scale_x_log10() + labs(x = "Log10(CAPE)")
-
-print(plt1)
-print(plt2)
-print(plt3)
-print(plt4)
+plot_vs_returns(cape, log10(cape$CAPE), "Log10(CAPE)", alpha = 1/10)
 ```
+
+The `cor.test` function showed that he Pearson R correlations were -0.19, -0.30,
+-0.37 and -0.4, in order of increasing forward looking periods.
+
+The following plots break CAPE into quintiles and show the mean returns for 
+each quintile.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Cape_to_Mean_Returns}
+g_cape <- ggplot(aes(x = cut(log10(CAPE), breaks = 5)), 
+                 data = subset(cape, !is.na(CAPE)))
+
+g_cape + geom_bar(aes(y = Fwd1yrReturns), stat = "summary", fun.y = mean)
+g_cape + geom_bar(aes(y = Fwd3yrCAGR), stat = "summary", fun.y = mean)
+g_cape + geom_bar(aes(y = Fwd5yrCAGR), stat = "summary", fun.y = mean)
+g_cape + geom_bar(aes(y = Fwd10yrCAGR), stat = "summary", fun.y = mean)
+```
+
+Average returns are higher starting from points when the market was selling at 
+a discount. 1 yr returns show the highest average for the lowest CAPE reading. 
+But the just looking at the mean does not say anything about the distribution of
+those returns.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Cape_to_Returns_Boxplots}
+g_cape + geom_boxplot(aes(y = Fwd1yrReturns))
+g_cape + geom_boxplot(aes(y = Fwd3yrCAGR))
+g_cape + geom_boxplot(aes(y = Fwd5yrCAGR))
+g_cape + geom_boxplot(aes(y = Fwd10yrCAGR))
+```
+
+The boxplots show that the means are affected by skewed distributions. The
+medians returns are more of an indication of what investors will receive during
+a typical year.
 
 ### Momentum and Forward Returns
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Momentum_Returns}
-plt1 <- g + geom_point(aes(Momentum, Fwd1yrReturns))
-plt2 <- g + geom_point(aes(Momentum, Fwd3yrCAGR))
-plt3 <- g + geom_point(aes(Momentum, Fwd5yrCAGR))
-plt4 <- g + geom_point(aes(Momentum, Fwd10yrCAGR))
-
-print(plt1)
-print(plt2)
-print(plt3)
-print(plt4)
+plot_vs_returns(cape, cape$Momentum, "Momentum")
 ```
 
 There doesn't appear to be a strong correlation between Momentum and forward
-returns. There is some overplotting, and it looks like there are outliers. It
+returns. There is some over plotting, and it looks like there are outliers. It
 might help to zoom in and add some transparency to the points.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Momentum_ClearPlot}
 plt1 <-ggplot(aes(Momentum, Fwd1yrReturns), data = cape) +
-  geom_point(alpha = 1/2) + xlim(-.5, .5)
+  geom_point(alpha = 1/20) + xlim(-.5, .7)
 plt2 <-ggplot(aes(Momentum, Fwd3yrCAGR), data = cape) +
-  geom_point(alpha = 1/2) + xlim(-.5, .5)
+  geom_point(alpha = 1/20) + xlim(-.5, .7)
 plt3 <-ggplot(aes(Momentum, Fwd5yrCAGR), data = cape) +
-  geom_point(alpha = 1/2) + xlim(-.5, .5)
+  geom_point(alpha = 1/20) + xlim(-.5, .7)
 plt4 <-ggplot(aes(Momentum, Fwd10yrCAGR), data = cape) +
-  geom_point(alpha = 1/2) + xlim(-.5, .5)
+  geom_point(alpha = 1/20) + xlim(-.5, .7)
 
-print(plt1)
-print(plt2)
-print(plt3)
-print(plt4)
+grid.arrange(plt1, plt2, plt3, plt4)
 ```
 
-At first glance
+There still doesn't appear to be a correlation, which surprises me. Momentum is
+the tool of choice of trend followers. Maybe the categorical Growth variable 
+will shed some light.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Growth_to_CAGR}
 # trim the first 12 rows to remove NA values
-ggplot(aes(Growth, Fwd1yrReturns), data = cape[-(1:12),]) + geom_boxplot()
-ggplot(aes(Growth, Fwd3yrCAGR), data = cape[-(1:12),]) + geom_boxplot()
+plt1 <- ggplot(aes(Growth, Fwd1yrReturns), data = cape[-(1:12),]) + geom_boxplot()
+plt2 <- ggplot(aes(Growth, Fwd3yrCAGR), data = cape[-(1:12),]) + geom_boxplot()
+plt3 <- ggplot(aes(Growth, Fwd5yrCAGR), data = cape[-(1:12),]) + geom_boxplot()
+plt4 <- ggplot(aes(Growth, Fwd10yrCAGR), data = cape[-(1:12),]) + geom_boxplot()
+
+grid.arrange(plt1, plt2, plt3, plt4)
 ```
 
 Separating the data into Rising and Falling Growth periods does not appear to
 provide any benefit at all in predicting higher returns. However, it does
-tighten the distribution and reduce the tails, a particular benefit in reducing 
-risk. This is confirmation of what I have learned from studying trend following 
-in the past: the main benefit is not finding higher returns but in avoiding the 
-worst.
+tighten the distribution and reduce the tails of the forward 1 year returns, a
+particular benefit in reducing risk. This is confirmation of something I have
+learned from studying trend following  in the past: its main benefit is in
+avoiding the worst periods. However, I was expecting at least some power in 
+identifying higher future returns.
 
-### Dividends to Interest Rates
+One thing to note is that this connection reverses after the first year, with
+the 3 and 5 year plots showing the opposite connection and lower average returns
+after Rising Growth readings.
 
+### Interest Rates
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, GS10_to_returns}
+plot_vs_returns(cape, cape$GS10, "GS10", alpha = 1/10)
+plot_vs_returns(cape, log10(cape$GS10), "Log(GS10)", alpha = 1/10)
+```
+
+There doesn't appear to be a correlation between interest rates and future 
+returns.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, GS10_CAPE}
+ggplot(cape[-(1:12),]) + geom_point(aes(GS10, CAPE))+
+  scale_x_log10() + scale_y_log10()
+cor.test(cape$GS10, cape$CAPE)
+```
+
+It does look like there could be some negative correlation between GS10 rates 
+and CAPE. But the `cor.test` function returns a low value indicating that it
+is very weak.
+
+### Inflation
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Inflation_to_returns}
+plot_vs_returns(cape, cape$CPIChange, "Inflation", alpha = 1/10)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, te}
+g + geom_point(aes(CPIChange, Momentum), alpha = 1/10)
+```
+
+Although it is not readily apparent in the plot, the `cor.test` function found 
+a weak correlation of .36 between CPIChangeand Fwd10yrCAGR. It looks like 
+inflation only correlates with returns over long periods
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Inflation_to_GS10}
+g + geom_point(aes(CPIChange, GS10), alpha = 1/10)
+```
+
+No correlation was visible between Inflation( as CPIChange) and the GS10 rates. 
+I was expecting to find one because of the Federal Reserve's use of rate policy 
+to manage the inflation rate. It's possible that lagging one against the other
+would reveal correlation. For example, it might show that the Fed raised rates
+after high inflation, or that inflation had lowered after rising rates.
 
 # Bivariate Analysis
-
-> **Tip**: As before, summarize what you found in your bivariate explorations
-here. Use the questions below to guide your discussion.
 
 ### Talk about some of the relationships you observed in this part of the \
 investigation. How did the feature(s) of interest vary with other features in \
 the dataset?
 
+Forward returns were negatively correlated with CAPE. They did not show 
+correlation to Momentum, Inflation or the GS10 rates. However, their 
+distribution did appear tighter in the 1 year forward returns following rising
+momentum.
+
 ### Did you observe any interesting relationships between the other features \
 (not the main feature(s) of interest)?
 
+Price, Dividend and Earnings were all highly correlated. This was expected as
+it was visible in the time series plots that they have varied together over the
+duration of the dataset.
+
+CAPE and GS10 had a weak negative correlation. This could be the affect of 
+investors being willing to pay a higher price for returns during low interest 
+rate periods, and vice versa.
+
 ### What was the strongest relationship you found?
 
+The strongest relationship was between CAPE and forward returns. The correlation
+was stronger with multiyear forward looking periods than with 1 year.
 
 # Multivariate Plots Section
 
-> **Tip**: Now it's time to put everything together. Based on what you found in
-the bivariate plots section, create a few multivariate plots to investigate
-more complex interactions between variables. Make sure that the plots that you
-create here are justified by the plots you explored in the previous section. If
-you plan on creating any mathematical models, this is the section where you
-will do that.
+### Growth and CAPE vs Foward Returns
 
-```{r echo=FALSE, Multivariate_Plots}
-g + geom_jitter(aes(CAPE, Fwd3yrReturns, col = Growth)) + scale_x_log10()
+```{r echo=FALSE, message=FALSE, warning=FALSE, Growth_CAPE}
+ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd1yrReturns, col = Growth)) +
+  scale_x_log10()
 ```
+
+It's difficult to see in this plot, but it does look like there is a stronger
+trend between CAPE and forward 1 year returns during periods of recession.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Growth_CAPE_Facet_Wrap}
+ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd1yrReturns, col = Growth)) +
+  scale_x_log10() + facet_wrap(~Growth)
+```
+
+Using `facet_wrap` to separate the conditions makes the difference easier to 
+see. Periods of falling growth in the stock market exhibit a stronger negative
+correlation between CAPE and price than during expansion.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, CAGR_Growth_CAPE_Facet_Wrap}
+ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd3yrCAGR, col = Growth)) +
+  scale_x_log10() + facet_wrap(~Growth)
+ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd5yrCAGR, col = Growth)) +
+  scale_x_log10() + facet_wrap(~Growth)
+ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd10yrCAGR, col = Growth)) +
+  scale_x_log10() + facet_wrap(~Growth)
+```
+
+The feature combination doesn't appear to have the same value over longer time
+periods.
+
+### CAPE and Inflation to Returns
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, CAPE_Inflation_Returns}
+ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd1yrReturns, col = Inflation)) +
+  scale_x_log10() + facet_wrap(~Inflation)
+ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd3yrCAGR, col = Inflation)) +
+  scale_x_log10() + facet_wrap(~Inflation)
+ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd5yrCAGR, col = Inflation)) +
+  scale_x_log10() + facet_wrap(~Inflation)
+ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd10yrCAGR, col = Inflation)) +
+  scale_x_log10() + facet_wrap(~Inflation)
+```
+
+Inflation and Deflation also appear to complement CAPE's correlation to returns.
+
+The numeric measures of Inflation and Growth did not show correlation during 
+bivariate analysis, suggesting that they should work well together to enhance
+the power of CAPE.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Quad_Wrap}
+g_cape + geom_boxplot(aes(y = Fwd1yrReturns)) + 
+  facet_wrap(Growth~Inflation)
+```
+
+CAPE looks strongest in predicting forward 1 year returns during deflationary
+recession years.
 
 # Multivariate Analysis
 
 ### Talk about some of the relationships you observed in this part of the \
 investigation. Were there features that strengthened each other in terms of \
 looking at your feature(s) of interest?
+
+Growth and Inflation both 
 
 ### Were there any interesting or surprising interactions between features?
 
