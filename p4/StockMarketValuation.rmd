@@ -47,6 +47,9 @@ as the X-axis for the charts in the excel file. The first format was likely an
 output of another program or data source and is not a format interpretable by
 excel.
 
+I converted the values into an R friendly Date format and dropped the 
+DateFraction column.
+
 [^2]:[Robert Shiller's Irrational Exuberance Data](
 http://www.econ.yale.edu/~shiller/data.htm)
 
@@ -72,14 +75,14 @@ cape$Date <- as.Date(cape$Date, '%Y.%m.%d')
 cape <- subset(cape, select = -c(DateFraction))
 ```
 
-..GS10 should be a decimal...
+The dataset contains the 10-Year Treasury Constant Maturity Rate labeled as
+GS10. The rates are in percentage form, most likely to make them easier to
+plot alongside the other features in the original excel file. I converted
+them to decimal form to prepare for analysis.
 
 ```{r echo=FALSE, Fix_GS10}
 cape$GS10 <- cape$GS10 / 100
 ```
-
-I converted the values into an R friendly Date format and dropped the 
-DateFraction column.
 
 ## Feature Extraction
 
@@ -191,7 +194,7 @@ str(cape)
 summary(cape)
 ```
 
-The final dataset contains 1769 observations of 19 variables.
+The final dataset contains 1769 observations of 22 variables.
 
 ### Price
 
@@ -383,12 +386,12 @@ returns occur more often than they would with a normal distribution, with
 greater than normal occurrence negative returns.
 
 The mean annual returns decrease as the forward looking periods decrease. This
-is a result of the negative skew and it's affect on compounding. Large losses
-require even larger gains for recovery, causing actual CAGRs to be lower than 
+is a result of the negative skew and its affect on compounding. Large losses
+require even larger gains for recovery, causing realized CAGRs to be lower than 
 the mean Fwd1yrReturns.
 
-After seeing the transformed values I decided to store them easier access during
-rest of the analysis.
+After seeing the transformed values I decided to store them for easier access
+during rest of the analysis.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Save_CAGR}
 cape$Fwd3yrCAGR <- annualize(cape$Fwd3yrReturns, 3)
@@ -544,7 +547,7 @@ g_cape + geom_boxplot(aes(y = Fwd10yrCAGR))
 ```
 
 The boxplots show that the means are affected by skewed distributions. The
-medians returns are more of an indication of what investors will receive during
+median returns are more of an indication of what investors would earn during
 a typical year.
 
 ### Momentum and Forward Returns
@@ -748,7 +751,14 @@ plot_vs_returns(cape, 1/cape$CAPE - cape$GS10,
 investigation. Were there features that strengthened each other in terms of \
 looking at your feature(s) of interest?
 
-Growth and Inflation both 
+The Growth and Inflation features both strengthened the correlation between
+CAPE and 1 year forward returns. CAPE appears to have the strongest
+correlation to forward returns after periods of recession and deflation.
+One possible explenation is that perods of expanding growth and inflation
+push all prices up, without discrimination to the fundamental value of the
+market. In the reverse situation, a benefit of this relationship is that
+CAPE can be used to help identify good opportuntities after stock and 
+consumer prices have been falling.
 
 ### Were there any interesting or surprising interactions between features?
 
