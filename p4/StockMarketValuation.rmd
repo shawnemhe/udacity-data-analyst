@@ -51,7 +51,7 @@ excel.
 http://www.econ.yale.edu/~shiller/data.htm)
 
 ```{r echo=FALSE, Parse_Dates}
-# Convert date to character format for parsin
+# Convert date to character format for parsing
 cape$Date <- as.character(cape$Date)
 
 # The as.Date function requires a day, so a .1 needs to be appended to the dates
@@ -70,6 +70,12 @@ cape$Date <- as.Date(cape$Date, '%Y.%m.%d')
 
 # Drop the Date and DateFraction columns
 cape <- subset(cape, select = -c(DateFraction))
+```
+
+..GS10 should be a decimal...
+
+```{r echo=FALSE, Fix_GS10}
+cape$GS10 <- cape$GS10 / 100
 ```
 
 I converted the values into an R friendly Date format and dropped the 
@@ -720,6 +726,21 @@ g_cape + geom_boxplot(aes(y = Fwd1yrReturns)) +
 
 CAPE looks strongest in predicting forward 1 year returns during deflationary
 recession years.
+
+### The search for yield
+
+The inverse of CAPE can be interpreted as a yield similar to interest rates. Are 
+investors willing to pay more for earnings when interest rates are low?
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Dividend_Yield}
+g + geom_density(aes(1/CAPE - GS10)) +
+  labs(title = "Inverse CAPE minus the risk free rate")
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Modified_CAPE_vs_Returns}
+plot_vs_returns(cape, 1/cape$CAPE - cape$GS10,
+                "Stock Yield - GS10", alpha = 1/10)
+```
 
 # Multivariate Analysis
 
