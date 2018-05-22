@@ -17,3 +17,6 @@ https://www.bridgewater.com/resources/all-weather-story.pdf)
 http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html#Histogram)
 - [A brief history of dividend tax rates](
 http://www.dividend.com/taxes/a-brief-history-of-dividend-tax-rates/)
+- [Quick-R: Tree-Based Models](https://www.statmethods.net/advstats/cart.html)
+- [Calculating prediction accuracy](
+https://stackoverflow.com/questions/40080794/calculating-prediction-accuracy-of-a-tree-using-rparts-predict-method-r-progra)
