@@ -474,9 +474,9 @@ reduce skew and so that they could be directly compared.
 ### Stock Features
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Stock_Features}
-plt1 <- g + geom_point(aes((RealPrice), (RealEarnings)))
-plt2 <- g + geom_point(aes((RealPrice), (RealDividend)))
-plt3 <- g + geom_point(aes((RealDividend), (RealEarnings)))
+plt1 <- g + geom_point(aes(RealPrice, RealEarnings), alpha = 1/10)
+plt2 <- g + geom_point(aes(RealPrice, RealDividend), alpha = 1/10)
+plt3 <- g + geom_point(aes(RealDividend, RealEarnings), alpha = 1/10)
 
 grid.arrange(plt1, plt2, plt3, ncol = 2)
 
@@ -515,7 +515,7 @@ plot_vs_returns <- function(df, x, x_label, alpha = 1) {
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Cape_to_Returns}
-plot_vs_returns(cape, cape$CAPE, "CAPE")
+plot_vs_returns(cape, cape$CAPE, "CAPE", alpha = 1/10)
 ```
 
 There appears to be a negative correlation to forward returns, but the effect is
@@ -585,12 +585,11 @@ a typical year.
 ### Momentum and Forward Returns
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Momentum_Returns}
-plot_vs_returns(cape, cape$Momentum, "Momentum")
+plot_vs_returns(cape, cape$Momentum, "Momentum", alpha = 1/20)
 ```
 
 There doesn't appear to be a strong correlation between Momentum and forward
-returns. There is some over plotting, and it looks like there are outliers. It
-might help to zoom in and add some transparency to the points.
+returns. It looks like there are outliers. It might help to zoom in.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Momentum_ClearPlot}
 plt1 <-ggplot(aes(Momentum, Fwd1yrReturns), data = cape) +
@@ -644,7 +643,7 @@ the Pearson R is only .05, but it increases to .14, .21 and .39 over the
 respective longer periods.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, GS10_CAPE}
-ggplot(cape[-(1:12),]) + geom_point(aes(GS10, log10(CAPE)))
+ggplot(cape[-(1:12),]) + geom_point(aes(GS10, log10(CAPE)), alpha = 1/10)
 cor.test(cape$GS10, cape$CAPE)
 cor.test(cape$GS10, log10(cape$CAPE))
 ```
@@ -924,7 +923,7 @@ contrary to public opinion.
 ### Plot Three
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Three}
 ggplot(subset(cape, !is.na(Growth))) +
-  geom_density(aes(Fwd1yrReturns, fill = Growth), alpha = 0.5) + 
+  geom_boxplot(aes(Growth, Fwd1yrReturns, fill = Growth), alpha = 0.5) + 
   ggtitle("Trimming the fat tails of returns")
 ```
 
