@@ -711,7 +711,8 @@ correlation increasing over the longer periods tested.
 ### Growth and CAPE vs Foward Returns
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Growth_CAPE}
-ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd1yrReturns, col = Growth)) +
+ggplot(cape[-(1:12),]) +
+  geom_point(aes(CAPE, Fwd1yrReturns, col = Growth), alpha = 1/2) +
   scale_x_log10()
 ```
 
@@ -719,7 +720,8 @@ It's difficult to see in this plot, but it does look like there is a stronger
 trend between CAPE and forward 1 year returns during periods of recession.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Growth_CAPE_Facet_Wrap}
-ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd1yrReturns, col = Growth)) +
+ggplot(cape[-(1:12),]) +
+  geom_point(aes(CAPE, Fwd1yrReturns, col = Growth), alpha = 1/3) +
   scale_x_log10() + facet_wrap(~Growth)
 ```
 
@@ -728,11 +730,14 @@ see. Periods of recession in the stock market exhibit a stronger negative
 correlation between CAPE and price than during expansion.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, CAGR_Growth_CAPE_Facet_Wrap}
-ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd3yrCAGR, col = Growth)) +
+ggplot(cape[-(1:12),]) +
+  geom_point(aes(CAPE, Fwd3yrCAGR, col = Growth), alpha = 1/3) +
   scale_x_log10() + facet_wrap(~Growth)
-ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd5yrCAGR, col = Growth)) +
+ggplot(cape[-(1:12),]) +
+  geom_point(aes(CAPE, Fwd5yrCAGR, col = Growth), alpha = 1/3) +
   scale_x_log10() + facet_wrap(~Growth)
-ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd10yrCAGR, col = Growth)) +
+ggplot(cape[-(1:12),]) +
+  geom_point(aes(CAPE, Fwd10yrCAGR, col = Growth), alpha = 1/3) +
   scale_x_log10() + facet_wrap(~Growth)
 ```
 
@@ -742,13 +747,17 @@ periods.
 ### CAPE and Inflation to Returns
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, CAPE_Inflation_Returns}
-ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd1yrReturns, col = Inflation)) +
+ggplot(cape[-(1:12),]) +
+  geom_point(aes(CAPE, Fwd1yrReturns, col = Inflation), alpha = 1/3) +
   scale_x_log10() + facet_wrap(~Inflation)
-ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd3yrCAGR, col = Inflation)) +
+ggplot(cape[-(1:12),]) +
+  geom_point(aes(CAPE, Fwd3yrCAGR, col = Inflation), alpha = 1/3) +
   scale_x_log10() + facet_wrap(~Inflation)
-ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd5yrCAGR, col = Inflation)) +
+ggplot(cape[-(1:12),]) +
+  geom_point(aes(CAPE, Fwd5yrCAGR, col = Inflation), alpha = 1/3) +
   scale_x_log10() + facet_wrap(~Inflation)
-ggplot(cape[-(1:12),]) + geom_point(aes(CAPE, Fwd10yrCAGR, col = Inflation)) +
+ggplot(cape[-(1:12),]) +
+  geom_point(aes(CAPE, Fwd10yrCAGR, col = Inflation), alpha = 1/3) +
   scale_x_log10() + facet_wrap(~Inflation)
 ```
 
@@ -891,7 +900,9 @@ relationships in the data.
 theme_set(theme_classic())
 
 g + geom_line(aes(Date, RealPrice)) + ggtitle("Stock Market Prices") +
-  scale_y_log10()
+  scale_y_log10(labels = scales::dollar,
+                breaks = c(0, 100, 500, 1000, 2500),
+                name = "Inflation Adjusted Price")
 ```
 
 ### Description One
@@ -907,7 +918,7 @@ ggplot(aes(x = log10_cut(CAPE), y = Fwd10yrCAGR),
   labs(x = "CAPE") + 
   scale_y_continuous(labels = scales::percent, limits = c(-.1, .2)) +
   geom_boxplot(aes(fill = log10_cut(CAPE))) +
-  labs(title = "Future Returns", fill = "CAPE")
+  labs(title = "Future Returns", fill = "Price per $ \nof Earnings")
 ```
 
 ### Description Two
@@ -924,7 +935,9 @@ contrary to public opinion.
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Three}
 ggplot(subset(cape, !is.na(Growth))) +
   geom_boxplot(aes(Growth, Fwd1yrReturns, fill = Growth), alpha = 0.5) + 
-  ggtitle("Trimming the fat tails of returns")
+  ggtitle("Trimming the fat tails of returns") +
+  scale_y_continuous(labels = scales::percent) +
+  theme(axis.text.x = element_blank(), axis.title.x = element_blank())
 ```
 
 ### Description Three
