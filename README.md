@@ -11,4 +11,4 @@ Projects from my udacity data analyst nanodegree.
 [Bella Napoli](https://shawnemhe.github.io/udacity-data-analyst/p3/bella_napoli.html)
 
 ### P4: Explore and Summarize Data
-[StockMarketValuation](https://shawnemhe.github.io/udacity-data-analyst/p4/StockMarketValuation.html)
+[Stock Market Valuation](https://shawnemhe.github.io/udacity-data-analyst/p4/StockMarketValuation.html)
