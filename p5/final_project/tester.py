@@ -16,13 +16,9 @@ import pickle
 import sys
 import os
 from sklearn.cross_validation import StratifiedShuffleSplit
-from feature_format import featureFormat, targetFeatureSplit
+sys.path.append("../tools/")
 
-# use alternate directory structure if running within my repository
-if os.curdir() == "p5":
-    sys.path.append("./tools/")
-else:
-    sys.path.append("../tools/")
+from feature_format import featureFormat, targetFeatureSplit
 
 PERF_FORMAT_STRING = "\
 \tAccuracy: {:>0.{display_precision}f}\tPrecision: {:>0.{display_precision}f}\t\
