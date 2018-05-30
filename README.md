@@ -12,3 +12,7 @@ Projects from my udacity data analyst nanodegree.
 
 ### P4: Explore and Summarize Data
 [Stock Market Valuation](https://shawnemhe.github.io/udacity-data-analyst/p4/StockMarketValuation.html)
+
+### P5: Machine Learning
+[Identifying Fraud from Enron Data](
+https://shawnemhe.github.io/udacity-data-analyst/p5/Identifying_Fraud_from_Enron_Data.html)
