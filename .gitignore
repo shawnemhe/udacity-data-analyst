@@ -17,7 +17,7 @@ napoli.osm.json
 emails_by_address/
 final_project_dataset.pkl
 p5/tools
-
+*.bz2
 ########################################
 # Begin python.gitignore template
 ########################################
