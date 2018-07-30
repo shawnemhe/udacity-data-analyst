@@ -16,20 +16,16 @@ URLS = [f'http://stat-computing.org/dataexpo/2009/{year}.csv.bz2'
 # Define features to load when reading the CSVs into pandas
 FEATURES_OF_INTEREST = [
     'Year',
-    'Month',
-    'CRSDepTime',
     'UniqueCarrier',
-    'ArrDelay',
     'DepDelay'
 ]
 
 # Features to group by
-GROUP_BY = ['Year', 'Month', 'Scheduled Departure', 'Airline']
+GROUP_BY = ['Year', 'UniqueCarrier']
 
 # Mapping of aggregation functions to features
 AGG_MAP = {
-    'ArrDelay': 'median',
-    'DepDelay': 'median'
+    'DepDelay': lambda x: (x>15).sum()/len(x)
 }
 
 with open('carrier_dict.pkl', 'rb') as file:
@@ -65,19 +61,21 @@ def aggregate_data(filename):
     # Unzip and read the csv
     df = pd.read_csv(filename, usecols=FEATURES_OF_INTEREST, compression='bz2')
     # Convert the carrier codes to their full names
-    df['Airline'] = df['UniqueCarrier'].map(CARRIER_MAP)
-    # Create buckets for each hour of the day
-    df['Scheduled Departure'] = pd.cut(df.CRSDepTime, list(range(0, 2500, 100)))
+    df['UniqueCarrier'] = df['UniqueCarrier'].map(CARRIER_MAP)
     # Aggregate and reduce the dataframe
-    df = df.groupby(GROUP_BY).agg(AGG_MAP).stack().reset_index()
-    df.rename(columns={'level_4':'DelayType', 0:'Delay','UniqueCarrier':'Airline'},
-              inplace=True, copy=False)
-    df.set_index(GROUP_BY, inplace=True)
+    df = df.groupby(GROUP_BY).agg(AGG_MAP)
+#    df.set_index(GROUP_BY, inplace=True)
     print(f'Processed: {filename}')
     return df
 
 
 if __name__ == '__main__':
+    # Verify feature mapping variables are correct before beginning
+    for feature in GROUP_BY:
+        assert feature in FEATURES_OF_INTEREST, f'Unexpected feature {feature} in group_by.'
+    for feature in AGG_MAP.keys():
+        assert feature in FEATURES_OF_INTEREST, f'Unexpected feature {feature} in aggregation map.'
+
     with concurrent.futures.ProcessPoolExecutor() as pe, concurrent.futures.ThreadPoolExecutor() as te:
         future_url_request = [te.submit(load_url, url, pe) for url in URLS]
 

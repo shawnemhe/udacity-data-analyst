@@ -1,58 +1,71 @@
 <html>
     <head>
-        <title>A Closer Look at Flight Delays</title>
+        <title>Flight Delays</title>
+        <style>
+            h1 {text-align: center}
+            h2 {text-align: center}
+            div {text-align: center}
+        </style>
     </head>
+    <h1>How often are flights delayed?</h1>
     <div id="annualChart"></div>
     <div id="carrierChart"></div>
     <div id="hourlyChart"></div>
     <script src="http://d3js.org/d3.v4.min.js"></script>
     <script src="http://dimplejs.org/dist/dimple.v2.3.0.min.js"></script>
     <script type="text/javascript">
-    d3.csv("/data/flight_data.csv", function (data) {
+    data = d3.csv("/data/flight_data.csv", drawAnnualChart);
+    
+    function drawAnnualChart(data) {
         d3.select("#annualChart")
             .append("h2")
-            .text("Average Delay by Year")
+            .text("Chance of Delay by Year")
         var svg = dimple.newSvg("#annualChart", 590, 400);
         var myChart = new dimple.chart(svg, data);
         myChart.setBounds(60, 30, 510, 305)
-        var x = myChart.addCategoryAxis("x", ["Year", "DelayType"]);
-        var y = myChart.addMeasureAxis("y", ["Delay"]);
-        y.title = "Average Delay"
-        var mySeries = myChart.addSeries("DelayType", dimple.plot.line);
+        var x = myChart.addTimeAxis("x", "Year", "%Y", "%Y");
+        var y = myChart.addMeasureAxis("y", "DepDelay");
+        y.tickFormat = ".0%";
+        y.title = "% of Flights Delayed by More Than 15 Minutes";
+        var mySeries = myChart.addSeries(null, dimple.plot.line);
         mySeries.aggregate = dimple.aggregateMethod.avg;
-        myChart.addLegend(65, 10, 510, 20, "right");
         myChart.draw();
         drawCarrierChart(data);
-    });
+    };
 
     function drawCarrierChart(data) {
         d3.select("#carrierChart")
             .append("h2")
-            .text("Average Delay by Airline")
+            .text("Chance of Delay by Airline")
         var svg = dimple.newSvg("#carrierChart", 590, 400);
         var myChart = new dimple.chart(svg, data);
         myChart.setBounds(60, 30, 510, 305)
-        var x = myChart.addCategoryAxis("x", ["Airline", "DelayType"]);
-        var y = myChart.addMeasureAxis("y", ["Delay"]);
-        y.title = "Average Delay"
-        var mySeries = myChart.addSeries("DelayType", dimple.plot.bar);
+        var x = myChart.addTimeAxis("x", "Year", "%Y", "%Y");
+        var y = myChart.addMeasureAxis("y", "DepDelay");
+        var z = myChart.addMeasureAxis("z", "DepDelay");
+        y.tickFormat = ".0%"
+        y.title = "% of Flights Delayed by More Than 15 Minutes"
+        var mySeries = myChart.addSeries("UniqueCarrier", dimple.plot.bubble);
         mySeries.aggregate = dimple.aggregateMethod.avg;
-        myChart.addLegend(65, 10, 510, 20, "right");
+//        storyboard = myChart.setStoryboard("UniqueCarrier");
         myChart.draw();
-        drawHourlyChart(data);
     }
 
-    function drawHourlyChart(data) {
-        d3.select("#hourlyChart")
+    function drawCarrierChart_old(data) {
+        d3.select("#carrierChart")
             .append("h2")
-            .text("Average Delay by Departure Hour")
-        var svg = dimple.newSvg("#hourlyChart", 590, 400);
+            .text("Chance of Delay by Airline")
+        var svg = dimple.newSvg("#carrierChart", 590, 400);
         var myChart = new dimple.chart(svg, data);
-        myChart.setBounds(75, 30, 480, 330)
-        myChart.addMeasureAxis("x", "Delay");
-        var y = myChart.addCategoryAxis("y", "Scheduled Departure");
-        mySeries = myChart.addSeries(null, dimple.plot.bar);
+        myChart.setBounds(60, 30, 510, 305)
+        var x = myChart.addCategoryAxis("x", "UniqueCarrier");
+        x.title = "Airline"
+        var y = myChart.addMeasureAxis("y", "DepDelay");
+        y.tickFormat = ".0%"
+        y.title = "% of Flights Delayed by More Than 15 Minutes"
+        var mySeries = myChart.addSeries("UniqueCarrier", dimple.plot.bar);
         mySeries.aggregate = dimple.aggregateMethod.avg;
+        storyboard = myChart.setStoryboard("Year");
         myChart.draw();
     }
     </script>
