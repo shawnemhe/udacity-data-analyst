@@ -13,10 +13,11 @@
     <script src="http://dimplejs.org/dist/dimple.v2.3.0.min.js"></script>
     <script type="text/javascript">
     d3.csv("/data/flight_data.csv", drawCarrierChart);
-    function drawCarrierChart(data) {
+    
+    function drawCarrierChart (data) {
         d3.select("#carrierChart")
             .append("h2")
-            .text("Chance of Delay by Airline")
+            .text("Chance of Delay by Airline and Year")
         var svg = dimple.newSvg("#carrierChart", 800, 400);
         var carrierChart = new dimple.chart(svg, data);
         carrierChart.setBounds(90,30,520,330);
@@ -27,7 +28,7 @@
         carrierChart.addSeries("UniqueCarrier", dimple.plot.bubble);
         var lineSeries = carrierChart.addSeries(null, dimple.plot.line);
         lineSeries.aggregate = dimple.aggregateMethod.avg;
-        airlineLegend = carrierChart.addLegend(630, 0, 100, 370, "left");
+        airlineLegend = carrierChart.addLegend(630, 0, 100, 380, "left");
 
         carrierChart.draw(800);
 
@@ -71,7 +72,7 @@
             .enter()
             .append("text")
                 .attr("x", 630)
-                .attr("y", 390)
+                .attr("y", 400)
                 .style("font-family", "sans-serif")
                 .style("font-size", "10px")
                 .style("color", "Blue")
