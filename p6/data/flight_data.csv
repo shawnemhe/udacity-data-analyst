@@ -1,277 +1,277 @@
-,Year,UniqueCarrier,DepDelay
-0,1987,Alaska Airlines Inc.,0.15444267962253574
-1,1987,American Airlines Inc.,0.11292930638743709
-2,1987,Continental Air Lines Inc.,0.169875286580706
-3,1987,Delta Air Lines Inc.,0.12933971250665993
-4,1987,Eastern Air Lines Inc.,0.14151099507244244
-5,1987,Northwest Airlines Inc.,0.1268460280956471
-6,1987,Pacific Southwest Airlines,0.24917278089483527
-7,1987,Pan American World Airways (1),0.08799523383973785
-8,1987,Piedmont Aviation Inc.,0.15483937432392988
-9,1987,Southwest Airlines Co.,0.1726986688180718
-10,1987,Trans World Airways LLC,0.14499641062455132
-11,1987,US Airways,0.13836092231105532
-12,1987,United Air Lines Inc.,0.15848097284830695
-13,1989,Alaska Airlines Inc.,0.0996723592378986
-14,1989,American Airlines Inc.,0.12163257066693213
-15,1989,Continental Air Lines Inc.,0.12611802438085212
-16,1989,Delta Air Lines Inc.,0.11254021345044171
-17,1989,Eastern Air Lines Inc.,0.1206158959128836
-18,1989,Northwest Airlines Inc.,0.10837140732083089
-19,1989,Pan American World Airways (1),0.13235349728360205
-20,1989,Piedmont Aviation Inc.,0.22345891008592828
-21,1989,Southwest Airlines Co.,0.16870035526069765
-22,1989,Trans World Airways LLC,0.14380170072087126
-23,1989,US Airways,0.18140275131342726
-24,1989,United Air Lines Inc.,0.19496618952658376
-25,1988,Alaska Airlines Inc.,0.10497428246977356
-26,1988,American Airlines Inc.,0.10063662546760954
-27,1988,Continental Air Lines Inc.,0.13952445238944405
-28,1988,Delta Air Lines Inc.,0.08577116460185442
-29,1988,Eastern Air Lines Inc.,0.137128428018043
-30,1988,Northwest Airlines Inc.,0.1087752642314111
-31,1988,Pacific Southwest Airlines,0.08599174441077521
-32,1988,Pan American World Airways (1),0.10626314624155873
-33,1988,Piedmont Aviation Inc.,0.13405045471242596
-34,1988,Southwest Airlines Co.,0.11251724321893744
-35,1988,Trans World Airways LLC,0.1349109379701906
-36,1988,US Airways,0.12852793171162258
-37,1988,United Air Lines Inc.,0.1446289155641546
-38,1990,Alaska Airlines Inc.,0.09601364184042314
-39,1990,American Airlines Inc.,0.11156082352610736
-40,1990,Continental Air Lines Inc.,0.12176017961971139
-41,1990,Delta Air Lines Inc.,0.12118626996512398
-42,1990,Eastern Air Lines Inc.,0.1358937832572129
-43,1990,Northwest Airlines Inc.,0.1058441347496995
-44,1990,Pan American World Airways (1),0.08194471200154113
-45,1990,Southwest Airlines Co.,0.17028804773840545
-46,1990,Trans World Airways LLC,0.13451332793301587
-47,1990,US Airways,0.11750830120471054
-48,1990,United Air Lines Inc.,0.14101890020487445
-49,1992,Alaska Airlines Inc.,0.07028872777794085
-50,1992,American Airlines Inc.,0.08845675517114003
-51,1992,Continental Air Lines Inc.,0.11113954888215861
-52,1992,Delta Air Lines Inc.,0.11956342673356658
-53,1992,Northwest Airlines Inc.,0.07641109971764319
-54,1992,Southwest Airlines Co.,0.07303410638619855
-55,1992,Trans World Airways LLC,0.11598748625476264
-56,1992,US Airways,0.11301941916634957
-57,1992,United Air Lines Inc.,0.10896865405279432
-58,1991,Alaska Airlines Inc.,0.07825006063545961
-59,1991,American Airlines Inc.,0.0805829085027255
-60,1991,Continental Air Lines Inc.,0.11031374931133368
-61,1991,Delta Air Lines Inc.,0.11171925637095032
-62,1991,Midway Airlines Inc. (1),0.09215258701254567
-63,1991,Northwest Airlines Inc.,0.08296503921952067
-64,1991,Pan American World Airways (1),0.0709264780855567
-65,1991,Southwest Airlines Co.,0.13546892882131834
-66,1991,Trans World Airways LLC,0.1204518291919972
-67,1991,US Airways,0.09710135926464847
-68,1991,United Air Lines Inc.,0.1386255679717121
-69,1994,Alaska Airlines Inc.,0.07221110874654181
-70,1994,American Airlines Inc.,0.1028012798413905
-71,1994,Continental Air Lines Inc.,0.13958798269098288
-72,1994,Delta Air Lines Inc.,0.10766403743284934
-73,1994,Northwest Airlines Inc.,0.0864295212490524
-74,1994,Southwest Airlines Co.,0.12082217655360737
-75,1994,Trans World Airways LLC,0.12467225654034585
-76,1994,US Airways,0.14704028068359665
-77,1994,United Air Lines Inc.,0.11947240704500979
-78,2001,Alaska Airlines Inc.,0.20877997021355474
-79,2001,Aloha Airlines Inc.,0.1031079222275921
-80,2001,American Airlines Inc.,0.1533351464814466
-81,2001,American Eagle Airlines Inc.,0.19035262291129465
-82,2001,Continental Air Lines Inc.,0.11138647321227414
-83,2001,Delta Air Lines Inc.,0.13357182880048274
-84,2001,Northwest Airlines Inc.,0.1243215863576246
-85,2001,Southwest Airlines Co.,0.16062665531345827
-86,2001,Trans World Airways LLC,0.13055275190931714
-87,2001,US Airways,0.1417638504239886
-88,2001,United Air Lines Inc.,0.1779958778797039
-89,1995,Alaska Airlines Inc.,0.11624137828957105
-90,1995,American Airlines Inc.,0.13151606966742244
-91,1995,Continental Air Lines Inc.,0.12376819934396041
-92,1995,Delta Air Lines Inc.,0.14788935531928613
-93,1995,Northwest Airlines Inc.,0.12206795950875324
-94,1995,Southwest Airlines Co.,0.16097509598168233
-95,1995,Trans World Airways LLC,0.16490244153098527
-96,1995,US Airways,0.1423639970698921
-97,1995,United Air Lines Inc.,0.17376349842095895
-98,1997,Alaska Airlines Inc.,0.15334686971235195
-99,1997,American Airlines Inc.,0.12784921846995426
-100,1997,Continental Air Lines Inc.,0.13485343957714038
-101,1997,Delta Air Lines Inc.,0.14612030156750014
-102,1997,Northwest Airlines Inc.,0.1682019242225664
-103,1997,Southwest Airlines Co.,0.1628032494222173
-104,1997,Trans World Airways LLC,0.13287256830282043
-105,1997,US Airways,0.12910259389982218
-106,1997,United Air Lines Inc.,0.16596423726922338
-107,1993,Alaska Airlines Inc.,0.06386199469679267
-108,1993,American Airlines Inc.,0.09965475863611865
-109,1993,Continental Air Lines Inc.,0.12399656783296788
-110,1993,Delta Air Lines Inc.,0.125387141560314
-111,1993,Northwest Airlines Inc.,0.07579117622901622
-112,1993,Southwest Airlines Co.,0.09469991726939869
-113,1993,Trans World Airways LLC,0.10731998267846492
-114,1993,US Airways,0.11337506077412621
-115,1993,United Air Lines Inc.,0.13132928456321658
-116,1998,Alaska Airlines Inc.,0.1697608724214952
-117,1998,American Airlines Inc.,0.12564247253864774
-118,1998,Continental Air Lines Inc.,0.13951106135401092
-119,1998,Delta Air Lines Inc.,0.11531698894650282
-120,1998,Northwest Airlines Inc.,0.16566068639196835
-121,1998,Southwest Airlines Co.,0.1745152864358723
-122,1998,Trans World Airways LLC,0.15452452448800139
-123,1998,US Airways,0.1614190174407547
-124,1998,United Air Lines Inc.,0.18075940031451287
-125,1996,Alaska Airlines Inc.,0.19839768246113756
-126,1996,American Airlines Inc.,0.1644707637531863
-127,1996,Continental Air Lines Inc.,0.14284645640790522
-128,1996,Delta Air Lines Inc.,0.17267698293155737
-129,1996,Northwest Airlines Inc.,0.14880644371235321
-130,1996,Southwest Airlines Co.,0.16725880919279817
-131,1996,Trans World Airways LLC,0.21280690065774552
-132,1996,US Airways,0.16823415115910836
-133,1996,United Air Lines Inc.,0.198022212369401
-134,1999,Alaska Airlines Inc.,0.1962421043190816
-135,1999,American Airlines Inc.,0.15645785118955668
-136,1999,Continental Air Lines Inc.,0.1495072672456464
-137,1999,Delta Air Lines Inc.,0.12973647074267336
-138,1999,Northwest Airlines Inc.,0.12779701403626345
-139,1999,Southwest Airlines Co.,0.1868269603588217
-140,1999,Trans World Airways LLC,0.14145306891926188
-141,1999,US Airways,0.1917956632890513
-142,1999,United Air Lines Inc.,0.16044913930033447
-143,2000,Alaska Airlines Inc.,0.22017110870397155
-144,2000,Aloha Airlines Inc.,0.05772018847408481
-145,2000,American Airlines Inc.,0.17212316356018403
-146,2000,Continental Air Lines Inc.,0.1442565057653752
-147,2000,Delta Air Lines Inc.,0.15145111004163964
-148,2000,Northwest Airlines Inc.,0.14597605457279306
-149,2000,Southwest Airlines Co.,0.22939698299548425
-150,2000,Trans World Airways LLC,0.16814596583698635
-151,2000,US Airways,0.19079360683788946
-152,2000,United Air Lines Inc.,0.2567184206222579
-153,2002,Alaska Airlines Inc.,0.17154541000288956
-154,2002,American Airlines Inc.,0.10966180571278414
-155,2002,American Eagle Airlines Inc.,0.1473871777155533
-156,2002,Continental Air Lines Inc.,0.08725088087170942
-157,2002,Delta Air Lines Inc.,0.11411058266255739
-158,2002,Northwest Airlines Inc.,0.12385186166430627
-159,2002,Southwest Airlines Co.,0.1681816994078882
-160,2002,US Airways,0.11585885344918936
-161,2002,United Air Lines Inc.,0.1072348937806075
-162,2003,ATA Airlines,0.1229183531860761
-163,2003,AirTran Airways Corporation,0.159364201796821
-164,2003,Alaska Airlines Inc.,0.15149696152084854
-165,2003,American Airlines Inc.,0.11947500867408184
-166,2003,American Eagle Airlines Inc.,0.14456604318826935
-167,2003,Atlantic Southeast Airlines,0.1761194247968668
-168,2003,Continental Air Lines Inc.,0.09994648908971995
-169,2003,Delta Air Lines Inc.,0.10009127830497853
-170,2003,Expressjet Airlines Inc.,0.1066244826051706
-171,2003,Hawaiian Airlines Inc.,0.057080832588430594
-172,2003,Independence Air,0.18291152263374486
-173,2003,JetBlue Airways,0.134347463681829
-174,2003,Northwest Airlines Inc.,0.09509375751262121
-175,2003,Skywest Airlines Inc.,0.08480321370157837
-176,2003,Southwest Airlines Co.,0.11961721988887568
-177,2003,US Airways,0.12444241240284301
-178,2003,United Air Lines Inc.,0.10969800921764036
-179,2004,ATA Airlines,0.12844716878715265
-180,2004,AirTran Airways Corporation,0.19185767541431367
-181,2004,Alaska Airlines Inc.,0.1967519402127048
-182,2004,American Airlines Inc.,0.1672454863516895
-183,2004,American Eagle Airlines Inc.,0.18358973934355646
-184,2004,Atlantic Southeast Airlines,0.1885132736381208
-185,2004,Comair Inc.,0.16441049321540877
-186,2004,Continental Air Lines Inc.,0.12436482933494583
-187,2004,Delta Air Lines Inc.,0.14755874457199863
-188,2004,Expressjet Airlines Inc.,0.12718688724323707
-189,2004,Hawaiian Airlines Inc.,0.0432431308109907
-190,2004,Independence Air,0.19924892906342587
-191,2004,JetBlue Airways,0.1528485873945277
-192,2004,Northwest Airlines Inc.,0.11658315033334253
-193,2004,Skywest Airlines Inc.,0.12137715558164022
-194,2004,Southwest Airlines Co.,0.18071514250750198
-195,2004,US Airways,0.15304014886548523
-196,2004,United Air Lines Inc.,0.14186991284822925
-197,2006,ATA Airlines,0.19620446893174165
-198,2006,AirTran Airways Corporation,0.21415136022218015
-199,2006,Alaska Airlines Inc.,0.20714662116383528
-200,2006,Aloha Airlines Inc.,0.06522169158165428
-201,2006,American Airlines Inc.,0.190101880524614
-202,2006,American Eagle Airlines Inc.,0.21437660883349574
-203,2006,Atlantic Southeast Airlines,0.2768659639822364
-204,2006,Comair Inc.,0.17543033236365466
-205,2006,Continental Air Lines Inc.,0.19290278581332884
-206,2006,Delta Air Lines Inc.,0.16591646479056918
-207,2006,Expressjet Airlines Inc.,0.18199424649466556
-208,2006,Frontier Airlines Inc.,0.14633902928554796
-209,2006,Hawaiian Airlines Inc.,0.034423935752209
-210,2006,JetBlue Airways,0.20280353427683456
-211,2006,Mesa Airlines Inc.,0.21025777322780906
-212,2006,Northwest Airlines Inc.,0.1554587876547773
-213,2006,Skywest Airlines Inc.,0.17545050345825375
-214,2006,Southwest Airlines Co.,0.19784939976585547
-215,2006,US Airways,0.1646766129735126
-216,2006,United Air Lines Inc.,0.19860682229084334
-217,2005,ATA Airlines,0.11598539980502845
-218,2005,AirTran Airways Corporation,0.2481012528660334
-219,2005,Alaska Airlines Inc.,0.25790638836179636
-220,2005,American Airlines Inc.,0.17543562723343858
-221,2005,American Eagle Airlines Inc.,0.16460851978828342
-222,2005,Atlantic Southeast Airlines,0.22261502657173712
-223,2005,Comair Inc.,0.1391472634441452
-224,2005,Continental Air Lines Inc.,0.1524096527686484
-225,2005,Delta Air Lines Inc.,0.15254852636024196
-226,2005,Expressjet Airlines Inc.,0.14721856912526285
-227,2005,Frontier Airlines Inc.,0.14678433949863862
-228,2005,Hawaiian Airlines Inc.,0.031504887615964136
-229,2005,Independence Air,0.14504879406851684
-230,2005,JetBlue Airways,0.21484916704187304
-231,2005,Northwest Airlines Inc.,0.16110408625049913
-232,2005,Skywest Airlines Inc.,0.13609712167651616
-233,2005,Southwest Airlines Co.,0.1830972728694232
-234,2005,US Airways,0.16393942212997745
-235,2005,United Air Lines Inc.,0.17360130721644393
-236,2007,AirTran Airways Corporation,0.1827944322633845
-237,2007,Alaska Airlines Inc.,0.219845803289946
-238,2007,Aloha Airlines Inc.,0.06757981018119068
-239,2007,American Airlines Inc.,0.2376103758418697
-240,2007,American Eagle Airlines Inc.,0.22904232054379883
-241,2007,Atlantic Southeast Airlines,0.30298986144203693
-242,2007,Comair Inc.,0.21151304392459802
-243,2007,Continental Air Lines Inc.,0.20069874454976155
-244,2007,Delta Air Lines Inc.,0.15680547354530153
-245,2007,Expressjet Airlines Inc.,0.19652554321450505
-246,2007,Frontier Airlines Inc.,0.17460106382978724
-247,2007,Hawaiian Airlines Inc.,0.03594125500667557
-248,2007,JetBlue Airways,0.2260381300600679
-249,2007,Mesa Airlines Inc.,0.19931920560398422
-250,2007,Northwest Airlines Inc.,0.1781697649845848
-251,2007,Pinnacle Airlines Inc.,0.15286786606966943
-252,2007,Skywest Airlines Inc.,0.1736044905181959
-253,2007,Southwest Airlines Co.,0.19727754388636556
-254,2007,US Airways,0.22369486267295915
-255,2007,United Air Lines Inc.,0.22280113142395336
-256,2008,AirTran Airways Corporation,0.17555142844040905
-257,2008,Alaska Airlines Inc.,0.1616921020237985
-258,2008,Aloha Airlines Inc.,0.045641025641025644
-259,2008,American Airlines Inc.,0.22277788339932383
-260,2008,American Eagle Airlines Inc.,0.20196334571717958
-261,2008,Atlantic Southeast Airlines,0.20497906085716833
-262,2008,Comair Inc.,0.19152661595996093
-263,2008,Continental Air Lines Inc.,0.21145231274396475
-264,2008,Delta Air Lines Inc.,0.1564796395909995
-265,2008,Expressjet Airlines Inc.,0.19277989906811568
-266,2008,Frontier Airlines Inc.,0.15476911509784674
-267,2008,Hawaiian Airlines Inc.,0.06185100119690745
-268,2008,JetBlue Airways,0.20373194078259582
-269,2008,Mesa Airlines Inc.,0.19482995332051936
-270,2008,Northwest Airlines Inc.,0.1452486969728349
-271,2008,Pinnacle Airlines Inc.,0.13685699902367587
-272,2008,Skywest Airlines Inc.,0.15439409407238536
-273,2008,Southwest Airlines Co.,0.1895962068776139
-274,2008,US Airways,0.13351293792397964
-275,2008,United Air Lines Inc.,0.22203930903306898
+Year,UniqueCarrier,DepDelay
+1987,Alaska Airlines Inc.,0.15444268
+1987,American Airlines Inc.,0.112929306
+1987,Continental Air Lines Inc.,0.169875287
+1987,Delta Air Lines Inc.,0.129339713
+1987,Eastern Air Lines Inc.,0.141510995
+1987,Northwest Airlines Inc.,0.126846028
+1987,Pacific Southwest Airlines,0.249172781
+1987,Pan American World Airways (1),0.087995234
+1987,Piedmont Aviation Inc.,0.154839374
+1987,Southwest Airlines Co.,0.172698669
+1987,Trans World Airways LLC,0.144996411
+1987,US Airways,0.138360922
+1987,United Air Lines Inc.,0.158480973
+1989,Alaska Airlines Inc.,0.099672359
+1989,American Airlines Inc.,0.121632571
+1989,Continental Air Lines Inc.,0.126118024
+1989,Delta Air Lines Inc.,0.112540213
+1989,Eastern Air Lines Inc.,0.120615896
+1989,Northwest Airlines Inc.,0.108371407
+1989,Pan American World Airways (1),0.132353497
+1989,Piedmont Aviation Inc.,0.22345891
+1989,Southwest Airlines Co.,0.168700355
+1989,Trans World Airways LLC,0.143801701
+1989,US Airways,0.181402751
+1989,United Air Lines Inc.,0.19496619
+1988,Alaska Airlines Inc.,0.104974282
+1988,American Airlines Inc.,0.100636625
+1988,Continental Air Lines Inc.,0.139524452
+1988,Delta Air Lines Inc.,0.085771165
+1988,Eastern Air Lines Inc.,0.137128428
+1988,Northwest Airlines Inc.,0.108775264
+1988,Pacific Southwest Airlines,0.085991744
+1988,Pan American World Airways (1),0.106263146
+1988,Piedmont Aviation Inc.,0.134050455
+1988,Southwest Airlines Co.,0.112517243
+1988,Trans World Airways LLC,0.134910938
+1988,US Airways,0.128527932
+1988,United Air Lines Inc.,0.144628916
+1990,Alaska Airlines Inc.,0.096013642
+1990,American Airlines Inc.,0.111560824
+1990,Continental Air Lines Inc.,0.12176018
+1990,Delta Air Lines Inc.,0.12118627
+1990,Eastern Air Lines Inc.,0.135893783
+1990,Northwest Airlines Inc.,0.105844135
+1990,Pan American World Airways (1),0.081944712
+1990,Southwest Airlines Co.,0.170288048
+1990,Trans World Airways LLC,0.134513328
+1990,US Airways,0.117508301
+1990,United Air Lines Inc.,0.1410189
+1992,Alaska Airlines Inc.,0.070288728
+1992,American Airlines Inc.,0.088456755
+1992,Continental Air Lines Inc.,0.111139549
+1992,Delta Air Lines Inc.,0.119563427
+1992,Northwest Airlines Inc.,0.0764111
+1992,Southwest Airlines Co.,0.073034106
+1992,Trans World Airways LLC,0.115987486
+1992,US Airways,0.113019419
+1992,United Air Lines Inc.,0.108968654
+1991,Alaska Airlines Inc.,0.078250061
+1991,American Airlines Inc.,0.080582909
+1991,Continental Air Lines Inc.,0.110313749
+1991,Delta Air Lines Inc.,0.111719256
+1991,Midway Airlines Inc. (1),0.092152587
+1991,Northwest Airlines Inc.,0.082965039
+1991,Pan American World Airways (1),0.070926478
+1991,Southwest Airlines Co.,0.135468929
+1991,Trans World Airways LLC,0.120451829
+1991,US Airways,0.097101359
+1991,United Air Lines Inc.,0.138625568
+1994,Alaska Airlines Inc.,0.072211109
+1994,American Airlines Inc.,0.10280128
+1994,Continental Air Lines Inc.,0.139587983
+1994,Delta Air Lines Inc.,0.107664037
+1994,Northwest Airlines Inc.,0.086429521
+1994,Southwest Airlines Co.,0.120822177
+1994,Trans World Airways LLC,0.124672257
+1994,US Airways,0.147040281
+1994,United Air Lines Inc.,0.119472407
+2001,Alaska Airlines Inc.,0.20877997
+2001,Aloha Airlines Inc.,0.103107922
+2001,American Airlines Inc.,0.153335146
+2001,American Eagle Airlines Inc.,0.190352623
+2001,Continental Air Lines Inc.,0.111386473
+2001,Delta Air Lines Inc.,0.133571829
+2001,Northwest Airlines Inc.,0.124321586
+2001,Southwest Airlines Co.,0.160626655
+2001,Trans World Airways LLC,0.130552752
+2001,US Airways,0.14176385
+2001,United Air Lines Inc.,0.177995878
+1995,Alaska Airlines Inc.,0.116241378
+1995,American Airlines Inc.,0.13151607
+1995,Continental Air Lines Inc.,0.123768199
+1995,Delta Air Lines Inc.,0.147889355
+1995,Northwest Airlines Inc.,0.12206796
+1995,Southwest Airlines Co.,0.160975096
+1995,Trans World Airways LLC,0.164902442
+1995,US Airways,0.142363997
+1995,United Air Lines Inc.,0.173763498
+1997,Alaska Airlines Inc.,0.15334687
+1997,American Airlines Inc.,0.127849218
+1997,Continental Air Lines Inc.,0.13485344
+1997,Delta Air Lines Inc.,0.146120302
+1997,Northwest Airlines Inc.,0.168201924
+1997,Southwest Airlines Co.,0.162803249
+1997,Trans World Airways LLC,0.132872568
+1997,US Airways,0.129102594
+1997,United Air Lines Inc.,0.165964237
+1993,Alaska Airlines Inc.,0.063861995
+1993,American Airlines Inc.,0.099654759
+1993,Continental Air Lines Inc.,0.123996568
+1993,Delta Air Lines Inc.,0.125387142
+1993,Northwest Airlines Inc.,0.075791176
+1993,Southwest Airlines Co.,0.094699917
+1993,Trans World Airways LLC,0.107319983
+1993,US Airways,0.113375061
+1993,United Air Lines Inc.,0.131329285
+1998,Alaska Airlines Inc.,0.169760872
+1998,American Airlines Inc.,0.125642473
+1998,Continental Air Lines Inc.,0.139511061
+1998,Delta Air Lines Inc.,0.115316989
+1998,Northwest Airlines Inc.,0.165660686
+1998,Southwest Airlines Co.,0.174515286
+1998,Trans World Airways LLC,0.154524524
+1998,US Airways,0.161419017
+1998,United Air Lines Inc.,0.1807594
+1996,Alaska Airlines Inc.,0.198397682
+1996,American Airlines Inc.,0.164470764
+1996,Continental Air Lines Inc.,0.142846456
+1996,Delta Air Lines Inc.,0.172676983
+1996,Northwest Airlines Inc.,0.148806444
+1996,Southwest Airlines Co.,0.167258809
+1996,Trans World Airways LLC,0.212806901
+1996,US Airways,0.168234151
+1996,United Air Lines Inc.,0.198022212
+1999,Alaska Airlines Inc.,0.196242104
+1999,American Airlines Inc.,0.156457851
+1999,Continental Air Lines Inc.,0.149507267
+1999,Delta Air Lines Inc.,0.129736471
+1999,Northwest Airlines Inc.,0.127797014
+1999,Southwest Airlines Co.,0.18682696
+1999,Trans World Airways LLC,0.141453069
+1999,US Airways,0.191795663
+1999,United Air Lines Inc.,0.160449139
+2000,Alaska Airlines Inc.,0.220171109
+2000,Aloha Airlines Inc.,0.057720188
+2000,American Airlines Inc.,0.172123164
+2000,Continental Air Lines Inc.,0.144256506
+2000,Delta Air Lines Inc.,0.15145111
+2000,Northwest Airlines Inc.,0.145976055
+2000,Southwest Airlines Co.,0.229396983
+2000,Trans World Airways LLC,0.168145966
+2000,US Airways,0.190793607
+2000,United Air Lines Inc.,0.256718421
+2002,Alaska Airlines Inc.,0.17154541
+2002,American Airlines Inc.,0.109661806
+2002,American Eagle Airlines Inc.,0.147387178
+2002,Continental Air Lines Inc.,0.087250881
+2002,Delta Air Lines Inc.,0.114110583
+2002,Northwest Airlines Inc.,0.123851862
+2002,Southwest Airlines Co.,0.168181699
+2002,US Airways,0.115858853
+2002,United Air Lines Inc.,0.107234894
+2003,ATA Airlines,0.122918353
+2003,AirTran Airways Corporation,0.159364202
+2003,Alaska Airlines Inc.,0.151496962
+2003,American Airlines Inc.,0.119475009
+2003,American Eagle Airlines Inc.,0.144566043
+2003,Atlantic Southeast Airlines,0.176119425
+2003,Continental Air Lines Inc.,0.099946489
+2003,Delta Air Lines Inc.,0.100091278
+2003,Expressjet Airlines Inc.,0.106624483
+2003,Hawaiian Airlines Inc.,0.057080833
+2003,Independence Air,0.182911523
+2003,JetBlue Airways,0.134347464
+2003,Northwest Airlines Inc.,0.095093758
+2003,Skywest Airlines Inc.,0.084803214
+2003,Southwest Airlines Co.,0.11961722
+2003,US Airways,0.124442412
+2003,United Air Lines Inc.,0.109698009
+2004,ATA Airlines,0.128447169
+2004,AirTran Airways Corporation,0.191857675
+2004,Alaska Airlines Inc.,0.19675194
+2004,American Airlines Inc.,0.167245486
+2004,American Eagle Airlines Inc.,0.183589739
+2004,Atlantic Southeast Airlines,0.188513274
+2004,Comair Inc.,0.164410493
+2004,Continental Air Lines Inc.,0.124364829
+2004,Delta Air Lines Inc.,0.147558745
+2004,Expressjet Airlines Inc.,0.127186887
+2004,Hawaiian Airlines Inc.,0.043243131
+2004,Independence Air,0.199248929
+2004,JetBlue Airways,0.152848587
+2004,Northwest Airlines Inc.,0.11658315
+2004,Skywest Airlines Inc.,0.121377156
+2004,Southwest Airlines Co.,0.180715143
+2004,US Airways,0.153040149
+2004,United Air Lines Inc.,0.141869913
+2006,ATA Airlines,0.196204469
+2006,AirTran Airways Corporation,0.21415136
+2006,Alaska Airlines Inc.,0.207146621
+2006,Aloha Airlines Inc.,0.065221692
+2006,American Airlines Inc.,0.190101881
+2006,American Eagle Airlines Inc.,0.214376609
+2006,Atlantic Southeast Airlines,0.276865964
+2006,Comair Inc.,0.175430332
+2006,Continental Air Lines Inc.,0.192902786
+2006,Delta Air Lines Inc.,0.165916465
+2006,Expressjet Airlines Inc.,0.181994246
+2006,Frontier Airlines Inc.,0.146339029
+2006,Hawaiian Airlines Inc.,0.034423936
+2006,JetBlue Airways,0.202803534
+2006,Mesa Airlines Inc.,0.210257773
+2006,Northwest Airlines Inc.,0.155458788
+2006,Skywest Airlines Inc.,0.175450503
+2006,Southwest Airlines Co.,0.1978494
+2006,US Airways,0.164676613
+2006,United Air Lines Inc.,0.198606822
+2005,ATA Airlines,0.1159854
+2005,AirTran Airways Corporation,0.248101253
+2005,Alaska Airlines Inc.,0.257906388
+2005,American Airlines Inc.,0.175435627
+2005,American Eagle Airlines Inc.,0.16460852
+2005,Atlantic Southeast Airlines,0.222615027
+2005,Comair Inc.,0.139147263
+2005,Continental Air Lines Inc.,0.152409653
+2005,Delta Air Lines Inc.,0.152548526
+2005,Expressjet Airlines Inc.,0.147218569
+2005,Frontier Airlines Inc.,0.146784339
+2005,Hawaiian Airlines Inc.,0.031504888
+2005,Independence Air,0.145048794
+2005,JetBlue Airways,0.214849167
+2005,Northwest Airlines Inc.,0.161104086
+2005,Skywest Airlines Inc.,0.136097122
+2005,Southwest Airlines Co.,0.183097273
+2005,US Airways,0.163939422
+2005,United Air Lines Inc.,0.173601307
+2007,AirTran Airways Corporation,0.182794432
+2007,Alaska Airlines Inc.,0.219845803
+2007,Aloha Airlines Inc.,0.06757981
+2007,American Airlines Inc.,0.237610376
+2007,American Eagle Airlines Inc.,0.229042321
+2007,Atlantic Southeast Airlines,0.302989861
+2007,Comair Inc.,0.211513044
+2007,Continental Air Lines Inc.,0.200698745
+2007,Delta Air Lines Inc.,0.156805474
+2007,Expressjet Airlines Inc.,0.196525543
+2007,Frontier Airlines Inc.,0.174601064
+2007,Hawaiian Airlines Inc.,0.035941255
+2007,JetBlue Airways,0.22603813
+2007,Mesa Airlines Inc.,0.199319206
+2007,Northwest Airlines Inc.,0.178169765
+2007,Pinnacle Airlines Inc.,0.152867866
+2007,Skywest Airlines Inc.,0.173604491
+2007,Southwest Airlines Co.,0.197277544
+2007,US Airways,0.223694863
+2007,United Air Lines Inc.,0.222801131
+2008,AirTran Airways Corporation,0.175551428
+2008,Alaska Airlines Inc.,0.161692102
+2008,Aloha Airlines Inc.,0.045641026
+2008,American Airlines Inc.,0.222777883
+2008,American Eagle Airlines Inc.,0.201963346
+2008,Atlantic Southeast Airlines,0.204979061
+2008,Comair Inc.,0.191526616
+2008,Continental Air Lines Inc.,0.211452313
+2008,Delta Air Lines Inc.,0.15647964
+2008,Expressjet Airlines Inc.,0.192779899
+2008,Frontier Airlines Inc.,0.154769115
+2008,Hawaiian Airlines Inc.,0.061851001
+2008,JetBlue Airways,0.203731941
+2008,Mesa Airlines Inc.,0.194829953
+2008,Northwest Airlines Inc.,0.145248697
+2008,Pinnacle Airlines Inc.,0.136856999
+2008,Skywest Airlines Inc.,0.154394094
+2008,Southwest Airlines Co.,0.189596207
+2008,US Airways,0.133512938
+2008,United Air Lines Inc.,0.222039309

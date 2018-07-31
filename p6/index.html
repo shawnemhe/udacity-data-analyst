@@ -8,65 +8,89 @@
         </style>
     </head>
     <h1>How often are flights delayed?</h1>
-    <div id="annualChart"></div>
     <div id="carrierChart"></div>
-    <div id="hourlyChart"></div>
     <script src="http://d3js.org/d3.v4.min.js"></script>
     <script src="http://dimplejs.org/dist/dimple.v2.3.0.min.js"></script>
     <script type="text/javascript">
-    data = d3.csv("/data/flight_data.csv", drawAnnualChart);
-    
-    function drawAnnualChart(data) {
-        d3.select("#annualChart")
-            .append("h2")
-            .text("Chance of Delay by Year")
-        var svg = dimple.newSvg("#annualChart", 590, 400);
-        var myChart = new dimple.chart(svg, data);
-        myChart.setBounds(60, 30, 510, 305)
-        var x = myChart.addTimeAxis("x", "Year", "%Y", "%Y");
-        var y = myChart.addMeasureAxis("y", "DepDelay");
-        y.tickFormat = ".0%";
-        y.title = "% of Flights Delayed by More Than 15 Minutes";
-        var mySeries = myChart.addSeries(null, dimple.plot.line);
-        mySeries.aggregate = dimple.aggregateMethod.avg;
-        myChart.draw();
-        drawCarrierChart(data);
-    };
-
+    d3.csv("/data/flight_data.csv", drawCarrierChart);
     function drawCarrierChart(data) {
         d3.select("#carrierChart")
             .append("h2")
             .text("Chance of Delay by Airline")
-        var svg = dimple.newSvg("#carrierChart", 590, 400);
-        var myChart = new dimple.chart(svg, data);
-        myChart.setBounds(60, 30, 510, 305)
-        var x = myChart.addTimeAxis("x", "Year", "%Y", "%Y");
-        var y = myChart.addMeasureAxis("y", "DepDelay");
-        var z = myChart.addMeasureAxis("z", "DepDelay");
+        var svg = dimple.newSvg("#carrierChart", 800, 400);
+        var carrierChart = new dimple.chart(svg, data);
+        carrierChart.setBounds(90,30,520,330);
+        var x = carrierChart.addTimeAxis("x", "Year", "%Y", "%Y");
+        var y = carrierChart.addMeasureAxis("y", "DepDelay");
         y.tickFormat = ".0%"
         y.title = "% of Flights Delayed by More Than 15 Minutes"
-        var mySeries = myChart.addSeries("UniqueCarrier", dimple.plot.bubble);
-        mySeries.aggregate = dimple.aggregateMethod.avg;
-//        storyboard = myChart.setStoryboard("UniqueCarrier");
-        myChart.draw();
-    }
+        carrierChart.addSeries("UniqueCarrier", dimple.plot.bubble);
+        var lineSeries = carrierChart.addSeries(null, dimple.plot.line);
+        lineSeries.aggregate = dimple.aggregateMethod.avg;
+        airlineLegend = carrierChart.addLegend(630, 0, 100, 370, "left");
 
-    function drawCarrierChart_old(data) {
-        d3.select("#carrierChart")
-            .append("h2")
-            .text("Chance of Delay by Airline")
-        var svg = dimple.newSvg("#carrierChart", 590, 400);
-        var myChart = new dimple.chart(svg, data);
-        myChart.setBounds(60, 30, 510, 305)
-        var x = myChart.addCategoryAxis("x", "UniqueCarrier");
-        x.title = "Airline"
-        var y = myChart.addMeasureAxis("y", "DepDelay");
-        y.tickFormat = ".0%"
-        y.title = "% of Flights Delayed by More Than 15 Minutes"
-        var mySeries = myChart.addSeries("UniqueCarrier", dimple.plot.bar);
-        mySeries.aggregate = dimple.aggregateMethod.avg;
-        storyboard = myChart.setStoryboard("Year");
-        myChart.draw();
+        carrierChart.draw(800);
+
+        // orphan legends from chart
+        carrierChart.legends = [];
+
+        // get a list of all of the filterValues
+        var filterValues = dimple.getUniqueValues(data, "UniqueCarrier");
+        var allValues = filterValues;
+
+        airlineLegend.shapes.selectAll("rect")
+            .on("click", function (e) {
+                // This indicates whether the item is already visible or not
+                var hide = false;
+                var newFilters = [];
+                // If the filters contain the clicked shape hide it
+                filterValues.forEach(function (f) {
+                    if (f === e.aggField.slice(-1)[0]) {
+                    hide = true;
+                    } else {
+                        newFilters.push(f);
+                    }
+                }); 
+                // Hide the shape or show it
+                if (hide) {
+                d3.select(this).style("opacity", 0.2);
+                } else {
+                    newFilters.push(e.aggField.slice(-1)[0]);
+                    d3.select(this).style("opacity", 0.8);
+                }
+                // Update the filters
+                filterValues = newFilters;
+                // Filter the data
+                carrierChart.data = dimple.filterData(data, "UniqueCarrier", filterValues);
+                // Redraw chart
+                carrierChart.draw(800);
+                });
+            
+        svg.selectAll("title_text")
+            .data(["Show/Hide All"])
+            .enter()
+            .append("text")
+                .attr("x", 630)
+                .attr("y", 390)
+                .style("font-family", "sans-serif")
+                .style("font-size", "10px")
+                .style("color", "Blue")
+                .text(function (d) { return d })
+                .on("click", function (e) {
+                    if (filterValues === allValues) {
+                        filterValues = [];
+                        carrierChart.data = dimple.filterData(data, "UniqueCarrier", filterValues);
+                        airlineLegend.shapes.selectAll("rect")
+                            .style("opacity", .2);
+                        carrierChart.draw(800);
+                    } else {
+                        filterValues = allValues;
+                        carrierChart.data = dimple.filterData(data, "UniqueCarrier", filterValues);
+                        airlineLegend.shapes.selectAll("rect")
+                            .style("opacity", .8);
+                        carrierChart.draw(800);
+                    }
+                });
     }
     </script>
 </html>
