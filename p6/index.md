@@ -5,7 +5,6 @@
             .chartHeader {text-align: center}
             .carrierChart {
                 text-align: center;
-                width: 850px;
             }
             .legend_header {
                 font-family: sans-serif;
