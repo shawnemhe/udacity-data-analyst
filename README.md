@@ -1,3 +1,7 @@
+---
+title: Udacity Data Analyst Nanodegree
+---
+
 ### P1: Test a Perceptual Phenomenon
 [Stroop Test](https://shawnemhe.github.io/udacity-data-analyst/p1/Test_a_Perceptual_Phenomenon.html)
 
