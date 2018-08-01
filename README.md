@@ -16,3 +16,6 @@ Projects from my udacity data analyst nanodegree.
 ### P5: Machine Learning
 [Identifying Fraud from Enron Data](
 https://shawnemhe.github.io/udacity-data-analyst/p5/Identifying_Fraud_from_Enron_Data.html)
+
+### P6: Data Visualization
+[Exploring Flight Delays] (https://shawnemhe.github.io/udacity-data-analyst/p5)
