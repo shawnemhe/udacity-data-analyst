@@ -2,9 +2,15 @@
     <head>
         <title>Flight Delays</title>
         <style>
-            h1 {text-align: center}
-            h2 {text-align: center}
-            div {text-align: center}
+            .chartHeader {text-align: center}
+            .carrierChart {
+                text-align: center;
+                width: 850px;
+            }
+            .legend_header {
+                font-family: sans-serif;
+                font-size: 11px;
+            }
             .click_text {
                 font-family: sans-serif;
                 font-size: 10px;
@@ -12,18 +18,22 @@
             }
         </style>
     </head>
-    <h1>How often are flights delayed?</h1>
-    <div id="carrierChart"></div>
+    <div class="carrierChart"></div>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="js/dimple.v2.3.0.min.js"></script>
     <script type="text/javascript">
     d3.csv("data/flight_data.csv", drawCarrierChart);
     
     function drawCarrierChart (data) {
-        d3.select("#carrierChart")
+        d3.select(".carrierChart")
+            .append("h1")
+            .attr("class", "carrierChart")
+            .text("How often are flights delayed?");
+        d3.select(".carrierChart")
             .append("h2")
-            .text("Chance of Delay by Airline and Year")
-        var svg = dimple.newSvg("#carrierChart", 800, 400);
+            .attr("class", "carrierChart")
+            .text("Chance of Delay by Airline and Year");
+        var svg = dimple.newSvg(".carrierChart", 800, 520);
         var carrierChart = new dimple.chart(svg, data);
         carrierChart.setBounds(90,30,520,330);
         var x = carrierChart.addTimeAxis("x", "Year", "%Y", "%Y");
@@ -33,7 +43,7 @@
         carrierChart.addSeries("UniqueCarrier", dimple.plot.bubble);
         var lineSeries = carrierChart.addSeries(null, dimple.plot.line);
         lineSeries.aggregate = dimple.aggregateMethod.avg;
-        airlineLegend = carrierChart.addLegend(630, 0, 100, 380, "left");
+        airlineLegend = carrierChart.addLegend(630, 5, 100, 380, "left");
 
         carrierChart.draw(800);
 
@@ -90,13 +100,22 @@
                 // Redraw chart
                 carrierChart.draw(800);
                 });
+        
+        svg.selectAll("legend_header")
+            .data(["Click to filter"])
+            .enter()
+            .append("text")
+                .attr("x", 630)
+                .attr("y", 10)
+                .attr("class", "legend_header")
+                .text(function (d) { return d });
             
-        svg.selectAll("selct_all")
+        svg.selectAll("select_all")
             .data(["Show All"])
             .enter()
             .append("text")
                 .attr("x", 630)
-                .attr("y", 400)
+                .attr("y", 405)
                 .attr("class", "click_text")
                 .text(function (d) { return d })
                 .on("click", function (e) {
