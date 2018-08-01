@@ -39,10 +39,10 @@
         var y = carrierChart.addMeasureAxis("y", "DepDelay");
         y.tickFormat = ".0%"
         y.title = "% of Flights Delayed by More Than 15 Minutes"
-        carrierChart.addSeries("UniqueCarrier", dimple.plot.bubble);
+        var bubbleSeries = carrierChart.addSeries("UniqueCarrier", dimple.plot.bubble);
         var lineSeries = carrierChart.addSeries(null, dimple.plot.line);
         lineSeries.aggregate = dimple.aggregateMethod.avg;
-        airlineLegend = carrierChart.addLegend(630, 5, 100, 380, "left");
+        airlineLegend = carrierChart.addLegend(630, 5, 100, 380, "left", bubbleSeries);
 
         carrierChart.draw(800);
 
