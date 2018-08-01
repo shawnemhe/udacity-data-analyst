@@ -18,4 +18,4 @@ Projects from my udacity data analyst nanodegree.
 https://shawnemhe.github.io/udacity-data-analyst/p5/Identifying_Fraud_from_Enron_Data.html)
 
 ### P6: Data Visualization
-[Exploring Flight Delays] (https://shawnemhe.github.io/udacity-data-analyst/p5)
+[Exploring Flight Delays](https://shawnemhe.github.io/udacity-data-analyst/p5)
