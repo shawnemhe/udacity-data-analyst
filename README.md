@@ -14,8 +14,8 @@
 [Identifying Fraud from Enron Data](
 https://shawnemhe.github.io/udacity-data-analyst/p5/Identifying_Fraud_from_Enron_Data.html)
 
-### P6: Data Visualization
+### P6: Data Visualization: Exploring Flight Delays
 [Readme](https://shawnemhe.github.io/udacity-data-analyst/p6/project_readme.html)<br>
-[Exploring Flight Delays](https://shawnemhe.github.io/udacity-data-analyst/p6)<br>
-[Python Exploritory Data Analyis](
+[Visualization](https://shawnemhe.github.io/udacity-data-analyst/p6)<br>
+[Python Exploritory Data Analysis](
 https://shawnemhe.github.io/udacity-data-analyst/p6/python_eda/python_eda.html)
