@@ -1,16 +1,32 @@
 # Summary
-The visualization was created using flight data from RITA. It presents the percentage of flights that were delayed by more than 15 minutes for each airline and year in a filterable format for viewer-driven exploration. Also included in the github repository is a python script that used parrellel processing to aggregate the information from the 22 original data files.
+The visualization was created using flight data from RITA. It presents the percentage of flights that were delayed by more than 15 minutes for each airline between 1987 and 2008. Also included in the github repository is a python script that used parallel processing to aggregate the information from the 22 original data files.
 
 # Design
-I wanted to present the data in a way that allows the viewer to find the information they found interesting, so I used a viewer-driven narrative structure. I chose a bubble plot so that I could show each airline's information for each year on one chart, and made the airlines filterable so that the viewer can narrow the view down to the airlines they are interested in.
+I wanted to present the data in a way that immersed the viewer in the visualization so I used a martini-glass narrative. It begins with an animation that introduces the data and guides the user toward the message I wanted to convey. First the trend of airline delays is shown as I explain that delays have been increasing. Next the individual airlines are broken out as I show that there are large disparities between some carriers. The final view is an interactive and filterable chart so that the user can continue to explore the data. 
 
 # Feedback
-I used a python notebook for data exploration in the first phase. The initial feedback I received was that it the raw format did not convey a straightforward narrative. The average delay times were skewed negative by a large number of flights that were very early, presumably due to rescheduling. A more relavent metric was the chance a flight would be delayed.
+## Reviewer 1
+* Initial bar charts allowed comparing the airlines against each other, but not over time. An animation I created in the initial visualizations included too many years to be able to be followed.
+* After the visualization was changed to a martini glass narrative some of the text seemed out of place.
 
-I also created multiple dimple visualizations before choosing my final graph. I made graphs for the annual average  and bar charts for the airline averages. The feedback I received at this stage was that the bar charts were not appropriate. Although they allowed the airlines to be compared against each other, they did not give the sense of time I wanted to convey. I tried animating the bar charts over time, but there were too many years for the viewer to be able to follow.
+**Followup:** I created an aggregated data and used a bubble chart to combine the data on one chart. For the martini glass narrative, I moved the pre chart text to the center of the page, and then shifted it down when the chart was drawn.
 
-Another important piece of feedback I received was in regards to my data filter. The viewers did not realize that the legend was interactive until I told them. I added a simple "click to filter" header to guide the user.
+## Reviewer 2
+* The data lacked the desired impact because most of the averages were close to zero. The reviewer suggested it might have been because airlines were lying about how late their departures were, but I discovered the skew was being caused by a number of outlier flights that were rescheduled to depart several hours early.
+**Followup:** I modified the pre-processing script so that it aggregated the percentage of flights per year and airline that were over 15 minutes late.
+
+## Reviewer 3
+* The viewer did not realize that the legend was interactive until I told them.
+
+**Followup:**  I added a simple "click to filter" header to guide the user.
+
+## Udacity Feedback
+* The Udacity reviewer pointed out that the visualization was exploratory rather than explanatory.
+
+**Followup:** I changed to a martini-glass narrative in which I started with a message, and then finished with an interactive visualization for the viewer to explore.
+
 
 # Resources
 - [Stat-computing.org](http://stat-computing.org/dataexpo/2009/the-data.html)
-- [Dimplejs Advanced Examples](http://dimplejs.org/advanced_examples_index.html)
+- [DimpleJS Advanced Examples](http://dimplejs.org/advanced_examples_index.html)
+- [Text Transition](https://bl.ocks.org/mbostock/f7dcecb19c4af317e464)
